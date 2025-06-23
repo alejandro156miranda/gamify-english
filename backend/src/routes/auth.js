@@ -44,4 +44,7 @@ router.post('/login', async(req, res) => {
     }
 });
 
+//HomeScreen
+router.post('/homeScreen')
+
 module.exports = router;

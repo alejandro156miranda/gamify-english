@@ -13,7 +13,7 @@ export default function Login() {
     e.preventDefault();
     try {
       await login(form);
-      navigate('/');
+      navigate('/Principal');
     } catch {
       setError('Email o contraseña incorrectos');
     }

@@ -1,5 +1,6 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
+import { Outlet } from 'react-router-dom';
 import mascota from '../assets/chango_mascota.png'; // Asegúrate de tener la imagen en src/assets/
 
 export default function Layout({ children }) {
@@ -18,7 +19,9 @@ export default function Layout({ children }) {
         <p className="mascota-text">Aprende inglés con Novatrail</p>
       </div>
 
-      <main>{children}</main>
+      <main>
+        <Outlet /> {/* Aquí se cargan las páginas como Home, Register, Login */}
+      </main>
 
       <footer>© 2025 Gamify English - Todos los derechos reservados</footer>
     </div>

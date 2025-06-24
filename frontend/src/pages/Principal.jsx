@@ -16,7 +16,7 @@ function HomePage({ user }) {
       {showWelcome && (
         <div className="welcome-message animated fadeIn">
           <h2>¡Hola, !</h2>
-          <p>¿Lista para un nuevo reto semanal? 🧠🔥</p>
+          <p>¿List@ para un nuevo reto semanal? 🧠🔥</p>
         </div>
       )}
 

@@ -26,17 +26,17 @@ function HomePage() {
   
   return (
     <div className="home-container">
-      {showWelcome && (
-        <div className="welcome-message animated fadeIn">
-          <h2>¡Hola,  !</h2>
-          <p>¿List@ para un nuevo reto semanal? 🧠🔥</p>
-        </div>
-      )}
+      {showWelcome && user && (
+  <div className="welcome-message animated fadeIn">
+    <h2>¡Hola, {user.name}!</h2>
+    <p>¿List@ para un nuevo reto semanal? 🧠🔥</p>
+  </div>
+)}
 
-      {!showWelcome && (
-        <div className="main-content">
-          <h1>Gamify English</h1>
-          <p>Tu progreso: Nivel  puntos</p>
+{!showWelcome && user && (
+  <div className="main-content">
+    <h1>Gamify English</h1>
+    <p>Tu progreso: Nivel {user.level || 1} · {user.points || 0} puntos</p>
 
           <div className="buttons">
             <Link to="/weekly_challenges">

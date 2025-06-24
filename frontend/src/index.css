@@ -416,3 +416,26 @@ footer {
     color: #ccc;
     font-size: 0.75rem;
 }
+
+.perfil-container {
+    padding: 2rem;
+    max-width: 500px;
+    margin: auto;
+  }
+  .perfil-card {
+    background: #f3f4f63a;
+    padding: 1.5rem;
+    border-radius: 1rem;
+    box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+    max-width: 500px;
+    margin: auto;
+  }
+  
+  .perfil-card input {
+    width: 100%;
+    padding: 0.4rem;
+    margin: 0.3rem 0 1rem;
+  }
+  
+
+  

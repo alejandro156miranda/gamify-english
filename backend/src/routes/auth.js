@@ -45,7 +45,50 @@ router.post('/login', async(req, res) => {
     }
 });
 
-//Principal (Users)
+//Editar perfil (Users)
+
+const jwt = require('jsonwebtoken');
+const bcrypt = require('bcryptjs');
+
+// Ruta protegida para editar perfil
+router.put('/update-profile', async (req, res) => {
+  try {
+    const token = req.headers.authorization?.split(' ')[1];
+    if (!token) return res.status(401).json({ msg: 'Token no proporcionado' });
+
+    const decoded = jwt.verify(token, process.env.JWT_SECRET);
+    const user = await User.findById(decoded.id);
+
+    if (!user) return res.status(404).json({ msg: 'Usuario no encontrado' });
+
+    const { name, avatar, password } = req.body;
+
+    if (name) user.name = name;
+    if (avatar !== undefined) user.avatar = avatar;
+    if (password) {
+      const hash = await bcrypt.hash(password, 10);
+      user.passwordHash = hash;
+    }
+
+    await user.save();
+
+    // Devuelve datos actualizados
+    res.json({
+      id: user._id,
+      name: user.name,
+      email: user.email,
+      role: user.role,
+      avatar: user.avatar,
+      points: user.points,
+      createdAt: user.createdAt,
+      password: user.password,
+    });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ msg: 'Error al actualizar perfil' });
+  }
+});
+
 
 
 module.exports = router;

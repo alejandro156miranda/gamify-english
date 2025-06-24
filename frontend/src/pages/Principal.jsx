@@ -1,9 +1,10 @@
 import { useEffect, useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 
-function HomePage({ user }) {
+function HomePage() {
   const [showWelcome, setShowWelcome] = useState(true);
-  const navigate = useNavigate();
+  const [user, setUser] = useState(null);
+
 
   // Oculta el mensaje de bienvenida después de 3 segundos
   useEffect(() => {
@@ -11,11 +12,23 @@ function HomePage({ user }) {
     return () => clearTimeout(timer);
   }, []);
 
+  //Busca usuarios gusrdados en el local storage
+
+  useEffect(() => {
+    const savedUser = localStorage.getItem('user');
+    if (savedUser) {
+      setUser(JSON.parse(savedUser));
+    }
+  }, []);
+
+  //if (!user) return <p>Cargando...</p>;
+
+  
   return (
     <div className="home-container">
       {showWelcome && (
         <div className="welcome-message animated fadeIn">
-          <h2>¡Hola, !</h2>
+          <h2>¡Hola,  !</h2>
           <p>¿List@ para un nuevo reto semanal? 🧠🔥</p>
         </div>
       )}
@@ -26,15 +39,15 @@ function HomePage({ user }) {
           <p>Tu progreso: Nivel  puntos</p>
 
           <div className="buttons">
-            <button onClick={() => navigate('/weekly-challenge')}>
-              Ver Reto Semanal
-            </button>
-            <button onClick={() => navigate('/activities')}>
-              Explorar Actividades
-            </button>
-            <button onClick={() => navigate('/badges')}>
-              Ver Mis Insignias
-            </button>
+            <Link to="/weekly_challenges">
+            <button>Ver Reto Semanal</button>
+            </Link>
+            <Link to="/activities">
+            <button>Explorar Actividades</button>
+            </Link>
+            <Link to="/user_badges">
+            <button>Ver Mis Insignias</button>
+            </Link>
           </div>
 
           <div className="raffle-highlight">

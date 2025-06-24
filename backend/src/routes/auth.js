@@ -38,12 +38,14 @@ router.post('/login', async(req, res) => {
         if (!isMatch) return res.status(400).json({ msg: 'Contraseña incorrecta' });
         const token = jwt.sign({ id: user._id }, process.env.JWT_SECRET, { expiresIn: '1d' });
         res.json({ token, user: { id: user._id, role: user.role, name: user.name, email } });
+        
     } catch (err) {
         console.error(err);
         res.status(500).send('Error en el servidor');
     }
 });
 
-//HomeScreen
+//Principal (Users)
+
 
 module.exports = router;

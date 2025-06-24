@@ -7,7 +7,7 @@ export default function LayoutUser({ children }) {
       <header>
         <Link to="/">Gamify English</Link>
         <nav>
-          <Link to="/user_profile">Ver mi perfil</Link>
+          <Link to="/principal">Regresar</Link>
         </nav>
       </header>
 

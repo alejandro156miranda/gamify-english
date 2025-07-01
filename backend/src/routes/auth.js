@@ -45,9 +45,6 @@ router.post('/login', async(req, res) => {
     }
 });
 
-//Editar perfil (Users)
-
-const bcrypt = require('bcryptjs');
 
 // Ruta protegida para editar perfil
 router.put('/update-profile', async (req, res) => {

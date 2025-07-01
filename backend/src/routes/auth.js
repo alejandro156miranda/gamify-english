@@ -47,7 +47,6 @@ router.post('/login', async(req, res) => {
 
 //Editar perfil (Users)
 
-const jwt = require('jsonwebtoken');
 const bcrypt = require('bcryptjs');
 
 // Ruta protegida para editar perfil

@@ -1,20 +1,14 @@
+// src/components/LayoutUser.jsx
 import React from 'react';
-import { Link } from 'react-router-dom';
+import { Outlet, Link } from 'react-router-dom';
 
 export default function LayoutUser({ children }) {
   return (
-    <div className="wrapper">
+    <div className="layout-user">
       <header>
-        <Link to="/">Gamify English</Link>
-        <nav>
-          <Link to="/user_profile">Ver mi perfil</Link>
-        </nav>
+        <Link to="/principal">Inicio</Link>
       </header>
-
-
-      <main>{children}</main>
-
-      <footer>© 2025 Gamify English - Todos los derechos reservados</footer>
+      <main>{children /* o <Outlet/> si defines rutas hijas */}</main>
     </div>
   );
 }

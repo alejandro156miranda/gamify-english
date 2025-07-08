@@ -1,20 +1,24 @@
+// src/components/LayoutUserProfile.jsx
 import React from 'react';
-import { Link } from 'react-router-dom';
+import { Outlet, Link } from 'react-router-dom';
 
-export default function LayoutUser({ children }) {
+export default function LayoutUserProfile() {
   return (
-    <div className="wrapper">
+    <div className="user-layout">
       <header>
-        <Link to="/">Gamify English</Link>
         <nav>
-          <Link to="/principal">Regresar</Link>
+          <Link to="/principal">Principal</Link>
+          <Link to="/activities">Actividades</Link>
+          <Link to="/weekly_challenges">Retos</Link>
+          <Link to="/user_badges">Insignias</Link>
+          <Link to="/user_profile">Perfil</Link>
         </nav>
       </header>
-
-
-      <main>{children}</main>
-
-      <footer>© 2025 Gamify English - Todos los derechos reservados</footer>
+      <main>
+        {/* Aquí React Router inyectará Activities, WeeklyChallenges, etc. */}
+        <Outlet />
+      </main>
+      <footer>© 2025 Gamify English</footer>
     </div>
   );
 }

@@ -1,0 +1,206 @@
+/* Fuente y paleta gamer */
+
+@import url('https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap');
+.actg-container {
+    max-width: 800px;
+    margin: 2rem auto;
+    background: #0d0d1a;
+    padding: 2rem;
+    border: 2px solid #1affd5;
+    border-radius: 12px;
+    font-family: 'Press Start 2P', cursive;
+    color: #e6e6e6;
+}
+
+.title.neon {
+    font-size: 1.5rem;
+    color: #1affd5;
+    text-shadow: 0 0 5px #1affd5, 0 0 10px #1affd5, 0 0 20px #1affd5, 0 0 30px #1affd5;
+    margin-bottom: 1rem;
+    text-align: center;
+}
+
+.status,
+.footer-status {
+    font-size: 0.75rem;
+    color: #999;
+    text-align: center;
+    margin-bottom: 1rem;
+}
+
+.menu-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 1rem;
+    margin-bottom: 1rem;
+}
+
+.menu-btn,
+.game-btn {
+    padding: 1rem;
+    background: #28293d;
+    border: 2px solid #1affd5;
+    border-radius: 8px;
+    color: #fff;
+    transition: background .2s, transform .2s;
+    cursor: pointer;
+}
+
+.menu-btn:hover,
+.game-btn:hover {
+    background: #1affd5;
+    color: #000;
+    transform: scale(1.05);
+}
+
+.game-btn {
+    border-color: #ff1a75;
+}
+
+.opts-grid,
+.match-grid {
+    display: grid;
+    gap: 0.5rem;
+}
+
+.opts-grid {
+    grid-template-columns: 1fr 1fr;
+}
+
+.match-grid {
+    grid-template-columns: 1fr 1fr;
+    margin-bottom: 1rem;
+}
+
+.opt {
+    padding: 0.75rem;
+    background: #28293d;
+    border: 2px solid #1affd5;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: transform .1s;
+}
+
+.opt:hover {
+    transform: scale(1.05);
+}
+
+.opt.correct {
+    background: #00e600;
+    border-color: #00e600;
+}
+
+.opt.wrong {
+    background: #e60000;
+    border-color: #e60000;
+}
+
+.next-btn,
+.match-btn {
+    margin-top: 1rem;
+    padding: 0.75rem 1.25rem;
+    background: #1affd5;
+    border: none;
+    border-radius: 6px;
+    color: #000;
+    font-size: 0.75rem;
+    cursor: pointer;
+    transition: transform .2s;
+}
+
+.next-btn:hover,
+.match-btn:hover {
+    transform: scale(1.05);
+}
+
+.question {
+    font-size: 0.9rem;
+    margin: 1rem 0;
+}
+
+.match-msg {
+    color: #1affd5;
+    margin-top: 0.5rem;
+}
+
+.cell {
+    padding: 0.75rem;
+    background: #28293d;
+    border: 2px solid #1affd5;
+    border-radius: 6px;
+    text-align: center;
+    cursor: pointer;
+    transition: background .2s;
+}
+
+.cell:hover {
+    background: #1affd5;
+    color: #000;
+}
+
+.cell.sel {
+    border-color: #ff1a75;
+}
+
+.cell.matched {
+    background: #00e600;
+    border-color: #00e600;
+    color: #000;
+}
+
+.modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(15, 15, 30, 0.9);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 99;
+}
+
+.modal-box {
+    background: #1c1f2b;
+    padding: 30px 40px;
+    border-radius: 16px;
+    text-align: center;
+    color: #fff;
+    border: 2px solid #00f2ff;
+    box-shadow: 0 0 15px #00f2ff;
+    animation: fadeIn 0.4s ease;
+}
+
+.modal-box h2 {
+    font-size: 1.8rem;
+    margin-bottom: 10px;
+    color: #0ff;
+    text-shadow: 0 0 5px #0ff;
+}
+
+.modal-box p {
+    font-size: 1.2rem;
+    margin-bottom: 20px;
+}
+
+.modal-box .quiz-name {
+    font-weight: bold;
+    color: #f0f;
+}
+
+.modal-box .next-btn {
+    background-color: #00f2ff;
+    color: #000;
+    padding: 10px 20px;
+    font-weight: bold;
+    border: none;
+    border-radius: 10px;
+    cursor: pointer;
+    transition: transform 0.2s ease;
+}
+
+.modal-box .next-btn:hover {
+    transform: scale(1.05);
+    background-color: #0ff;
+}

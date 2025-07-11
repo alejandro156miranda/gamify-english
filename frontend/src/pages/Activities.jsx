@@ -1,6 +1,9 @@
 // frontend/src/pages/Activities.jsx
 import React, { useState, useEffect } from 'react';
+import { updateUserProgress } from '../services/challengeService';
 import './Activities.css';
+
+
 
 export default function Activities() {
   // --- Definición de los quizzes (4 quizzes de 10 preguntas cada uno) ---
@@ -10,16 +13,16 @@ export default function Activities() {
       title: 'Colores en Inglés',
       rewardPoints: 20,
       questions: [
-        { question: 'What color is grass?',            options: ['Green','Blue','Red','Yellow'],         answerIndex: 0 },
-        { question: 'What color is the sun?',           options: ['Purple','Yellow','Orange','Black'],    answerIndex: 1 },
-        { question: 'What color is a ripe banana?',     options: ['Blue','Green','Yellow','Pink'],        answerIndex: 2 },
-        { question: 'What color are strawberries?',     options: ['Red','Blue','Green','Black'],          answerIndex: 0 },
-        { question: 'What color are clouds on a rainy day?', options: ['White','Grey','Yellow','Brown'],    answerIndex: 1 },
-        { question: 'What color is chocolate?',         options: ['Brown','Green','Red','Purple'],        answerIndex: 0 },
-        { question: 'What color is an emerald?',        options: ['Green','Yellow','Blue','Red'],         answerIndex: 0 },
-        { question: 'What color is coal?',              options: ['White','Black','Blue','Orange'],       answerIndex: 1 },
-        { question: 'What color is lavender?',          options: ['Purple','Green','Yellow','Brown'],     answerIndex: 0 },
-        { question: 'What color is the ocean?',         options: ['Blue','Red','Brown','Grey'],           answerIndex: 0 }
+        { question: 'What color is grass?', options: ['Green', 'Blue', 'Red', 'Yellow'], answerIndex: 0 },
+        { question: 'What color is the sun?', options: ['Purple', 'Yellow', 'Orange', 'Black'], answerIndex: 1 },
+        { question: 'What color is a ripe banana?', options: ['Blue', 'Green', 'Yellow', 'Pink'], answerIndex: 2 },
+        { question: 'What color are strawberries?', options: ['Red', 'Blue', 'Green', 'Black'], answerIndex: 0 },
+        { question: 'What color are clouds on a rainy day?', options: ['White', 'Grey', 'Yellow', 'Brown'], answerIndex: 1 },
+        { question: 'What color is chocolate?', options: ['Brown', 'Green', 'Red', 'Purple'], answerIndex: 0 },
+        { question: 'What color is an emerald?', options: ['Green', 'Yellow', 'Blue', 'Red'], answerIndex: 0 },
+        { question: 'What color is coal?', options: ['White', 'Black', 'Blue', 'Orange'], answerIndex: 1 },
+        { question: 'What color is lavender?', options: ['Purple', 'Green', 'Yellow', 'Brown'], answerIndex: 0 },
+        { question: 'What color is the ocean?', options: ['Blue', 'Red', 'Brown', 'Grey'], answerIndex: 0 }
       ]
     },
     {
@@ -27,16 +30,16 @@ export default function Activities() {
       title: 'Números en Inglés',
       rewardPoints: 20,
       questions: [
-        { question: 'How do you say "1"?',   options: ['One','Two','Three','Four'],   answerIndex: 0 },
-        { question: 'How do you say "5"?',   options: ['Seven','Five','Nine','Six'],    answerIndex: 1 },
-        { question: 'How do you say "10"?',  options: ['Ten','Eleven','Twelve','Eight'],answerIndex: 0 },
-        { question: 'How do you say "12"?',  options: ['Ten','Twelve','Eight','Nine'],   answerIndex: 1 },
-        { question: 'How do you say "20"?',  options: ['Twenty','Two','Twelve','Thirteen'],answerIndex:0 },
-        { question: 'How do you say "100"?', options: ['Hundred','Thousand','Ten','Zero'], answerIndex:0 },
-        { question: 'How do you say "3"?',   options: ['Four','Three','Two','One'],      answerIndex:1 },
-        { question: 'How do you say "15"?',  options: ['Fifteen','Fifty','Five','None'], answerIndex:0 },
-        { question: 'How do you say "8"?',   options: ['Eight','Eighteen','Eighty','Eightteen'],answerIndex:0 },
-        { question: 'How do you say "7"?',   options: ['Six','Sixteen','Seven','Seventeen'],answerIndex:2 }
+        { question: 'How do you say "1"?', options: ['One', 'Two', 'Three', 'Four'], answerIndex: 0 },
+        { question: 'How do you say "5"?', options: ['Seven', 'Five', 'Nine', 'Six'], answerIndex: 1 },
+        { question: 'How do you say "10"?', options: ['Ten', 'Eleven', 'Twelve', 'Eight'], answerIndex: 0 },
+        { question: 'How do you say "12"?', options: ['Ten', 'Twelve', 'Eight', 'Nine'], answerIndex: 1 },
+        { question: 'How do you say "20"?', options: ['Twenty', 'Two', 'Twelve', 'Thirteen'], answerIndex: 0 },
+        { question: 'How do you say "100"?', options: ['Hundred', 'Thousand', 'Ten', 'Zero'], answerIndex: 0 },
+        { question: 'How do you say "3"?', options: ['Four', 'Three', 'Two', 'One'], answerIndex: 1 },
+        { question: 'How do you say "15"?', options: ['Fifteen', 'Fifty', 'Five', 'None'], answerIndex: 0 },
+        { question: 'How do you say "8"?', options: ['Eight', 'Eighteen', 'Eighty', 'Eightteen'], answerIndex: 0 },
+        { question: 'How do you say "7"?', options: ['Six', 'Sixteen', 'Seven', 'Seventeen'], answerIndex: 2 }
       ]
     },
     {
@@ -44,16 +47,16 @@ export default function Activities() {
       title: 'Animales en Inglés',
       rewardPoints: 20,
       questions: [
-        { question: 'What animal says "moo"?',    options: ['Cow','Dog','Cat','Horse'], answerIndex: 0 },
-        { question: 'What animal says "oink"?',   options: ['Pig','Sheep','Bird','Fish'],answerIndex:0 },
-        { question: 'What animal says "neigh"?',  options: ['Horse','Donkey','Lion','Tiger'],answerIndex:0 },
-        { question: 'What animal says "quack"?',  options: ['Duck','Crow','Frog','Elephant'],answerIndex:0 },
-        { question: 'What animal says "meow"?',   options: ['Cat','Cow','Pig','Sheep'],answerIndex:0 },
-        { question: 'What animal says "woof"?',   options: ['Cat','Dog','Mouse','Bee'],answerIndex:1 },
-        { question: 'Which is a big cat?',        options: ['Lion','Rabbit','Mouse','Sheep'],answerIndex:0 },
-        { question: 'Which animal hops?',         options: ['Elephant','Lion','Kangaroo','Cow'],answerIndex:2 },
-        { question: 'Which animal lives in water?',options:['Fish','Horse','Bird','Snake'],answerIndex:0 },
-        { question: 'Which animal has stripes?',  options: ['Zebra','Pig','Cow','Cat'],answerIndex:0 }
+        { question: 'What animal says "moo"?', options: ['Cow', 'Dog', 'Cat', 'Horse'], answerIndex: 0 },
+        { question: 'What animal says "oink"?', options: ['Pig', 'Sheep', 'Bird', 'Fish'], answerIndex: 0 },
+        { question: 'What animal says "neigh"?', options: ['Horse', 'Donkey', 'Lion', 'Tiger'], answerIndex: 0 },
+        { question: 'What animal says "quack"?', options: ['Duck', 'Crow', 'Frog', 'Elephant'], answerIndex: 0 },
+        { question: 'What animal says "meow"?', options: ['Cat', 'Cow', 'Pig', 'Sheep'], answerIndex: 0 },
+        { question: 'What animal says "woof"?', options: ['Cat', 'Dog', 'Mouse', 'Bee'], answerIndex: 1 },
+        { question: 'Which is a big cat?', options: ['Lion', 'Rabbit', 'Mouse', 'Sheep'], answerIndex: 0 },
+        { question: 'Which animal hops?', options: ['Elephant', 'Lion', 'Kangaroo', 'Cow'], answerIndex: 2 },
+        { question: 'Which animal lives in water?', options: ['Fish', 'Horse', 'Bird', 'Snake'], answerIndex: 0 },
+        { question: 'Which animal has stripes?', options: ['Zebra', 'Pig', 'Cow', 'Cat'], answerIndex: 0 }
       ]
     },
     {
@@ -61,28 +64,47 @@ export default function Activities() {
       title: 'Comida en Inglés',
       rewardPoints: 20,
       questions: [
-        { question: 'How do you say "pan"?',    options: ['Bread','Butter','Milk','Egg'],answerIndex:0 },
-        { question: 'How do you say "manzana"?',options: ['Apple','Grape','Orange','Pear'],answerIndex:0 },
-        { question: 'How do you say "queso"?',  options: ['Cheese','Ice','Rice','Tea'],answerIndex:0 },
-        { question: 'How do you say "tomate"?', options: ['Tomato','Potato','Carrot','Onion'],answerIndex:0 },
-        { question: 'How do you say "pollo"?',  options: ['Chicken','Beef','Pork','Fish'],answerIndex:0 },
-        { question: 'How do you say "arroz"?',  options: ['Rice','Bread','Cake','Soup'],answerIndex:0 },
-        { question: 'How do you say "uva"?',    options: ['Grape','Banana','Apple','Cherry'],answerIndex:0 },
-        { question: 'How do you say "helado"?', options: ['Ice cream','Juice','Bread','Butter'],answerIndex:0 },
-        { question: 'How do you say "huevo"?',  options: ['Egg','Milk','Cheese','Rice'],answerIndex:0 },
-        { question: 'How do you say "vino"?',   options: ['Wine','Water','Oil','Juice'],answerIndex:0 }
+        { question: 'How do you say "pan"?', options: ['Bread', 'Butter', 'Milk', 'Egg'], answerIndex: 0 },
+        { question: 'How do you say "manzana"?', options: ['Apple', 'Grape', 'Orange', 'Pear'], answerIndex: 0 },
+        { question: 'How do you say "queso"?', options: ['Cheese', 'Ice', 'Rice', 'Tea'], answerIndex: 0 },
+        { question: 'How do you say "tomate"?', options: ['Tomato', 'Potato', 'Carrot', 'Onion'], answerIndex: 0 },
+        { question: 'How do you say "pollo"?', options: ['Chicken', 'Beef', 'Pork', 'Fish'], answerIndex: 0 },
+        { question: 'How do you say "arroz"?', options: ['Rice', 'Bread', 'Cake', 'Soup'], answerIndex: 0 },
+        { question: 'How do you say "uva"?', options: ['Grape', 'Banana', 'Apple', 'Cherry'], answerIndex: 0 },
+        { question: 'How do you say "helado"?', options: ['Ice cream', 'Juice', 'Bread', 'Butter'], answerIndex: 0 },
+        { question: 'How do you say "huevo"?', options: ['Egg', 'Milk', 'Cheese', 'Rice'], answerIndex: 0 },
+        { question: 'How do you say "vino"?', options: ['Wine', 'Water', 'Oil', 'Juice'], answerIndex: 0 }
       ]
     }
   ];
 
   // --- Estado global ---
-  const [view, setView]   = useState('menu');    // 'menu' | 'quiz' | 'match' | 'modal'
+  const [view, setView] = useState('menu');    // 'menu' | 'quiz' | 'match' | 'modal'
   const [currentQuiz, setCurrentQuiz] = useState(null);
   const [qIndex, setQIndex] = useState(0);
   const [quizScore, setQuizScore] = useState(0);
   const [feedback, setFeedback] = useState(null); // 'correct' | 'wrong'
-  const [totalPoints, setTotalPoints] = useState(0);
-  const [level, setLevel] = useState(1);
+
+  
+  const [totalPoints, setTotalPoints] = useState(() => {
+    const storedUser = JSON.parse(localStorage.getItem('user'));
+    return storedUser?.points || 0;
+  });
+  
+  const [level, setLevel] = useState(() => {
+    const storedUser = JSON.parse(localStorage.getItem('user'));
+    return storedUser?.level || 1;
+  });
+
+
+  useEffect(() => {
+    const storedUser = JSON.parse(localStorage.getItem('user'));
+    if (storedUser) {
+      setLevel(storedUser.level || 1);
+      setTotalPoints(storedUser.points || 0);
+    }
+  }, []);
+
 
   // --- Modal de fin de quiz ---
   const [showModal, setShowModal] = useState(false);
@@ -112,13 +134,32 @@ export default function Activities() {
       setQIndex(i => i + 1);
     } else {
       // Fin del quiz: mostrar modal
+      const earnedPoints = quizScore;
+
       setTotalPoints(tp => tp + quizScore);
       setLevel(lv => Math.floor((lv + quizScore) / 100) + 1);
       setLastResult({ title: currentQuiz.title, points: quizScore });
       setShowModal(true);
-    }
-  };
 
+      const storedUser = JSON.parse(localStorage.getItem('user'));
+      const userId = storedUser?.id;
+
+      if (userId && earnedPoints > 0) {
+        updateUserProgress(userId, earnedPoints)
+          .then(res => {
+            console.log('✅ Progreso actualizado:', res.user);
+            localStorage.setItem('user', JSON.stringify(res.user)); // 👈 Actualizamos localStorage
+            setLevel(res.user.level);
+            setTotalPoints(res.user.points);
+          })
+          .catch(err => {
+            console.error('❌ Error al actualizar progreso:', err);
+          });
+
+
+      }
+    };
+  }
   // --- Manejo del modal ---
   const closeModal = () => {
     setShowModal(false);
@@ -152,19 +193,48 @@ export default function Activities() {
 
   const tryMatch = () => {
     if (selLeft && selRight) {
-      const correct = pairs.find(p => p.en === selLeft).es === selRight;
-      if (correct) {
-        setMatched(m => [...m, selLeft]);
-        setTotalPoints(tp => tp + 15);
-        setLevel(lv => Math.floor((lv + 15) / 100) + 1);
+      const correct = pairs.find(p => p.en === selLeft)?.es === selRight;
+  
+      if (correct && !matched.includes(selLeft)) {
+        const newMatched = [...matched, selLeft];
+        setMatched(newMatched);
         setMatchMsg('✅ ¡Correcto! +15 pts');
+  
+        const storedUser = JSON.parse(localStorage.getItem('user'));
+        const userId = storedUser?.id;
+  
+        //  Suma los puntos actuales +15
+        const currentPoints = storedUser?.points || 0;
+        const updatedPoints = currentPoints + 15;
+        const newLevel = Math.floor(updatedPoints / 100) + 1;
+  
+        if (userId) {
+          updateUserProgress(userId, 15, 'match')
+            .then(res => {
+              console.log('✔ Match guardado', res.user);
+              // 🔄 Actualiza el localStorage manualmente con los nuevos puntos
+              const updatedUser = {
+                ...storedUser,
+                points: updatedPoints,
+                level: newLevel
+              };
+              localStorage.setItem('user', JSON.stringify(updatedUser));
+              setLevel(newLevel);
+              setTotalPoints(updatedPoints);
+            })
+            .catch(err => console.error('❌ Match error:', err));
+        }
       } else {
-        setMatchMsg('❌ Incorrecto, inténtalo de nuevo');
+        setMatchMsg('❌ Incorrecto o ya emparejado');
       }
+  
       setSelLeft(null);
       setSelRight(null);
     }
   };
+  
+  
+  
 
   // --- Renderizado ---
   // 1) Modal final de quiz
@@ -174,7 +244,7 @@ export default function Activities() {
         <div className="modal-box">
           <h2>🎉 ¡Quiz Completado!</h2>
           <p>
-            Ganaste <strong>{lastResult.points}</strong> puntos en<br/>
+            Ganaste <strong>{lastResult.points}</strong> puntos en<br />
             <span className="quiz-name">{lastResult.title}</span>
           </p>
           <button className="next-btn" onClick={closeModal}>
@@ -192,7 +262,7 @@ export default function Activities() {
       <div className="actg-container">
         <h2 className="title neon">{currentQuiz.title}</h2>
         <div className="status">
-          Pregunta {qIndex+1}/{currentQuiz.questions.length} · Nivel {level} · Pts {totalPoints}
+          Pregunta {qIndex + 1}/{currentQuiz.questions.length} · Nivel {level} · Pts {totalPoints}
         </div>
         <p className="question">{question}</p>
         <div className="opts-grid">
@@ -233,8 +303,8 @@ export default function Activities() {
             {leftWords.map(w => (
               <div
                 key={w}
-                className={`cell ${matched.includes(w)? 'matched':''} ${selLeft===w?'sel':''}`}
-                onClick={()=> !matched.includes(w) && setSelLeft(w)}
+                className={`cell ${matched.includes(w) ? 'matched' : ''} ${selLeft === w ? 'sel' : ''}`}
+                onClick={() => !matched.includes(w) && setSelLeft(w)}
               >{w}</div>
             ))}
           </div>
@@ -242,8 +312,8 @@ export default function Activities() {
             {rightWords.map(w => (
               <div
                 key={w}
-                className={`cell ${matched.includes(pairs.find(p=>p.es===w).en)? 'matched':''} ${selRight===w?'sel':''}`}
-                onClick={()=> !matched.includes(pairs.find(p=>p.es===w).en) && setSelRight(w)}
+                className={`cell ${matched.includes(pairs.find(p => p.es === w).en) ? 'matched' : ''} ${selRight === w ? 'sel' : ''}`}
+                onClick={() => !matched.includes(pairs.find(p => p.es === w).en) && setSelRight(w)}
               >{w}</div>
             ))}
           </div>
@@ -251,7 +321,7 @@ export default function Activities() {
         <button className="match-btn" onClick={tryMatch}>Emparejar</button>
         {matchMsg && <p className="match-msg">{matchMsg}</p>}
         {matched.length === pairs.length && (
-          <button className="next-btn" onClick={()=> setView('menu')}>
+          <button className="next-btn" onClick={() => setView('menu')}>
             ¡Completado! Volver al menú
           </button>
         )}
@@ -265,11 +335,11 @@ export default function Activities() {
       <h1 className="title neon">ACTIVIDADES GAMER</h1>
       <div className="menu-grid">
         {quizzes.map(q => (
-          <button key={q.id} className="menu-btn" onClick={()=> startQuiz(q)}>
+          <button key={q.id} className="menu-btn" onClick={() => startQuiz(q)}>
             Quiz: {q.title}
           </button>
         ))}
-        <button className="menu-btn game-btn" onClick={()=> setView('match')}>
+        <button className="menu-btn game-btn" onClick={() => setView('match')}>
           Juego: Empareja Palabras
         </button>
       </div>
@@ -277,3 +347,4 @@ export default function Activities() {
     </div>
   );
 }
+

@@ -411,8 +411,7 @@ main {
 footer {
     text-align: center;
     background: rgba(0, 0, 0, 0.7);
-    padding: 1rem;
-    margin-top: auto;
+    padding: 1rem;    
     color: #ccc;
     font-size: 0.75rem;
 }

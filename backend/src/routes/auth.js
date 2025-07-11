@@ -45,7 +45,6 @@ router.post('/login', async(req, res) => {
     }
 });
 
-
 // Ruta protegida para editar perfil
 router.put('/update-profile', async (req, res) => {
   try {
@@ -82,6 +81,28 @@ router.put('/update-profile', async (req, res) => {
   } catch (err) {
     console.error(err);
     res.status(500).json({ msg: 'Error al actualizar perfil' });
+  }
+});
+
+
+// Actualizar puntos y nivel
+router.put('/update-progress/:id', async (req, res) => {
+  const { points, type } = req.body;
+  console.log(`Recibido update de puntos: ${points}` );
+  try {
+    const user = await User.findById(req.params.id);
+    if (!user) return res.status(404).json({ msg: 'Usuario no encontrado' });
+
+    user.points += points;
+    user.level = Math.floor(user.points / 100) + 1;
+
+    console.log(`📥 Progreso recibido: +${points} pts (${type}) para ${user.name}`);
+
+    await user.save();
+    res.json({ msg: 'Progreso actualizado', user });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ msg: 'Error del servidor' });
   }
 });
 

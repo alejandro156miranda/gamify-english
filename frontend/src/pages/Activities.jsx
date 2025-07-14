@@ -1,28 +1,22 @@
-// frontend/src/pages/Activities.jsx
+// src/pages/Activities.jsx
 import React, { useState, useEffect } from 'react';
 import { updateUserProgress } from '../services/challengeService';
+import cocodriloFeliz  from '../assets/cocodrilo_feliz.gif';
+import cocodriloTriste from '../assets/cocodrilo_triste.gif';
 import './Activities.css';
 
-
-
 export default function Activities() {
-  // --- Definición de los quizzes (4 quizzes de 10 preguntas cada uno) ---
+  // ────────────────────────────────
+  // 1) Definición de los quizzes (5 quizzes, 2 preguntas cada uno)
+  // ────────────────────────────────
   const quizzes = [
     {
       id: 'quiz-colors',
       title: 'Colores en Inglés',
       rewardPoints: 20,
       questions: [
-        { question: 'What color is grass?', options: ['Green', 'Blue', 'Red', 'Yellow'], answerIndex: 0 },
-        { question: 'What color is the sun?', options: ['Purple', 'Yellow', 'Orange', 'Black'], answerIndex: 1 },
-        { question: 'What color is a ripe banana?', options: ['Blue', 'Green', 'Yellow', 'Pink'], answerIndex: 2 },
-        { question: 'What color are strawberries?', options: ['Red', 'Blue', 'Green', 'Black'], answerIndex: 0 },
-        { question: 'What color are clouds on a rainy day?', options: ['White', 'Grey', 'Yellow', 'Brown'], answerIndex: 1 },
-        { question: 'What color is chocolate?', options: ['Brown', 'Green', 'Red', 'Purple'], answerIndex: 0 },
-        { question: 'What color is an emerald?', options: ['Green', 'Yellow', 'Blue', 'Red'], answerIndex: 0 },
-        { question: 'What color is coal?', options: ['White', 'Black', 'Blue', 'Orange'], answerIndex: 1 },
-        { question: 'What color is lavender?', options: ['Purple', 'Green', 'Yellow', 'Brown'], answerIndex: 0 },
-        { question: 'What color is the ocean?', options: ['Blue', 'Red', 'Brown', 'Grey'], answerIndex: 0 }
+        { question: 'What color is grass?', options: ['Green','Blue','Red'], answerIndex: 0 },
+        { question: 'What color is the sun?',   options: ['Yellow','Purple','Black'], answerIndex: 0 }
       ]
     },
     {
@@ -30,16 +24,8 @@ export default function Activities() {
       title: 'Números en Inglés',
       rewardPoints: 20,
       questions: [
-        { question: 'How do you say "1"?', options: ['One', 'Two', 'Three', 'Four'], answerIndex: 0 },
-        { question: 'How do you say "5"?', options: ['Seven', 'Five', 'Nine', 'Six'], answerIndex: 1 },
-        { question: 'How do you say "10"?', options: ['Ten', 'Eleven', 'Twelve', 'Eight'], answerIndex: 0 },
-        { question: 'How do you say "12"?', options: ['Ten', 'Twelve', 'Eight', 'Nine'], answerIndex: 1 },
-        { question: 'How do you say "20"?', options: ['Twenty', 'Two', 'Twelve', 'Thirteen'], answerIndex: 0 },
-        { question: 'How do you say "100"?', options: ['Hundred', 'Thousand', 'Ten', 'Zero'], answerIndex: 0 },
-        { question: 'How do you say "3"?', options: ['Four', 'Three', 'Two', 'One'], answerIndex: 1 },
-        { question: 'How do you say "15"?', options: ['Fifteen', 'Fifty', 'Five', 'None'], answerIndex: 0 },
-        { question: 'How do you say "8"?', options: ['Eight', 'Eighteen', 'Eighty', 'Eightteen'], answerIndex: 0 },
-        { question: 'How do you say "7"?', options: ['Six', 'Sixteen', 'Seven', 'Seventeen'], answerIndex: 2 }
+        { question: 'How do you say "1"?', options: ['One','Two','Three'], answerIndex: 0 },
+        { question: 'How do you say "5"?', options: ['Five','Seven','Nine'], answerIndex: 0 }
       ]
     },
     {
@@ -47,16 +33,8 @@ export default function Activities() {
       title: 'Animales en Inglés',
       rewardPoints: 20,
       questions: [
-        { question: 'What animal says "moo"?', options: ['Cow', 'Dog', 'Cat', 'Horse'], answerIndex: 0 },
-        { question: 'What animal says "oink"?', options: ['Pig', 'Sheep', 'Bird', 'Fish'], answerIndex: 0 },
-        { question: 'What animal says "neigh"?', options: ['Horse', 'Donkey', 'Lion', 'Tiger'], answerIndex: 0 },
-        { question: 'What animal says "quack"?', options: ['Duck', 'Crow', 'Frog', 'Elephant'], answerIndex: 0 },
-        { question: 'What animal says "meow"?', options: ['Cat', 'Cow', 'Pig', 'Sheep'], answerIndex: 0 },
-        { question: 'What animal says "woof"?', options: ['Cat', 'Dog', 'Mouse', 'Bee'], answerIndex: 1 },
-        { question: 'Which is a big cat?', options: ['Lion', 'Rabbit', 'Mouse', 'Sheep'], answerIndex: 0 },
-        { question: 'Which animal hops?', options: ['Elephant', 'Lion', 'Kangaroo', 'Cow'], answerIndex: 2 },
-        { question: 'Which animal lives in water?', options: ['Fish', 'Horse', 'Bird', 'Snake'], answerIndex: 0 },
-        { question: 'Which animal has stripes?', options: ['Zebra', 'Pig', 'Cow', 'Cat'], answerIndex: 0 }
+        { question: 'What animal says "moo"?', options: ['Cow','Dog','Cat'], answerIndex: 0 },
+        { question: 'What animal says "meow"?', options: ['Cat','Cow','Pig'], answerIndex: 0 }
       ]
     },
     {
@@ -64,54 +42,78 @@ export default function Activities() {
       title: 'Comida en Inglés',
       rewardPoints: 20,
       questions: [
-        { question: 'How do you say "pan"?', options: ['Bread', 'Butter', 'Milk', 'Egg'], answerIndex: 0 },
-        { question: 'How do you say "manzana"?', options: ['Apple', 'Grape', 'Orange', 'Pear'], answerIndex: 0 },
-        { question: 'How do you say "queso"?', options: ['Cheese', 'Ice', 'Rice', 'Tea'], answerIndex: 0 },
-        { question: 'How do you say "tomate"?', options: ['Tomato', 'Potato', 'Carrot', 'Onion'], answerIndex: 0 },
-        { question: 'How do you say "pollo"?', options: ['Chicken', 'Beef', 'Pork', 'Fish'], answerIndex: 0 },
-        { question: 'How do you say "arroz"?', options: ['Rice', 'Bread', 'Cake', 'Soup'], answerIndex: 0 },
-        { question: 'How do you say "uva"?', options: ['Grape', 'Banana', 'Apple', 'Cherry'], answerIndex: 0 },
-        { question: 'How do you say "helado"?', options: ['Ice cream', 'Juice', 'Bread', 'Butter'], answerIndex: 0 },
-        { question: 'How do you say "huevo"?', options: ['Egg', 'Milk', 'Cheese', 'Rice'], answerIndex: 0 },
-        { question: 'How do you say "vino"?', options: ['Wine', 'Water', 'Oil', 'Juice'], answerIndex: 0 }
+        { question: 'How do you say "pan"?', options: ['Bread','Butter','Milk'], answerIndex: 0 },
+        { question: 'How do you say "manzana"?', options: ['Apple','Grape','Orange'], answerIndex: 0 }
+      ]
+    },
+    {
+      id: 'quiz-body',
+      title: 'Partes del Cuerpo',
+      rewardPoints: 20,
+      questions: [
+        { question: 'What is "mano" in English?', options: ['Hand','Foot','Eye'], answerIndex: 0 },
+        { question: 'What is "ojo" in English?', options: ['Eye','Ear','Nose'], answerIndex: 0 }
       ]
     }
   ];
 
-  // --- Estado global ---
-  const [view, setView] = useState('menu');    // 'menu' | 'quiz' | 'match' | 'modal'
+  // ────────────────────────────────
+  // 2) Estados globales
+  // ────────────────────────────────
+  const [view, setView]               = useState('menu');
   const [currentQuiz, setCurrentQuiz] = useState(null);
-  const [qIndex, setQIndex] = useState(0);
-  const [quizScore, setQuizScore] = useState(0);
-  const [feedback, setFeedback] = useState(null); // 'correct' | 'wrong'
+  const [qIndex, setQIndex]           = useState(0);
+  const [quizScore, setQuizScore]     = useState(0);
+  const [feedback, setFeedback]       = useState(null);
+  const [showQuizModal, setShowQuizModal] = useState(false);
+  const [showLockModal, setShowLockModal] = useState(false);
+  const [lastResult, setLastResult]   = useState({ title:'', points:0 });
 
-  
   const [totalPoints, setTotalPoints] = useState(() => {
-    const storedUser = JSON.parse(localStorage.getItem('user'));
-    return storedUser?.points || 0;
+    const u = JSON.parse(localStorage.getItem('user'));
+    return u?.points || 0;
   });
-  
-  const [level, setLevel] = useState(() => {
-    const storedUser = JSON.parse(localStorage.getItem('user'));
-    return storedUser?.level || 1;
+  const [level, setLevel]             = useState(() => {
+    const u = JSON.parse(localStorage.getItem('user'));
+    return u?.level || 1;
   });
 
+  // ────────────────────────────────
+  // 3) Match Game
+  // ────────────────────────────────
+  const pairs = [{ en:'CAT', es:'GATO' }, { en:'DOG', es:'PERRO' }];
+  const [leftWords, setLeftWords]   = useState([]);
+  const [rightWords, setRightWords] = useState([]);
+  const [selLeft, setSelLeft]       = useState(null);
+  const [selRight, setSelRight]     = useState(null);
+  const [matched, setMatched]       = useState([]);
+  const [matchMsg, setMatchMsg]     = useState('');
 
+  // ────────────────────────────────
+  // 4) Carga inicial y preparar match
+  // ────────────────────────────────
   useEffect(() => {
-    const storedUser = JSON.parse(localStorage.getItem('user'));
-    if (storedUser) {
-      setLevel(storedUser.level || 1);
-      setTotalPoints(storedUser.points || 0);
-    }
+    const u = JSON.parse(localStorage.getItem('user'));
+    if (u) { setTotalPoints(u.points); setLevel(u.level); }
   }, []);
 
+  useEffect(() => {
+    if (view === 'match') {
+      setLeftWords(pairs.map(p => p.en).sort(() => Math.random() - 0.5));
+      setRightWords(pairs.map(p => p.es).sort(() => Math.random() - 0.5));
+      setSelLeft(null); setSelRight(null); setMatched([]); setMatchMsg('');
+    }
+  }, [view]);
 
-  // --- Modal de fin de quiz ---
-  const [showModal, setShowModal] = useState(false);
-  const [lastResult, setLastResult] = useState({ title: '', points: 0 });
-
-  // --- Iniciar quiz ---
+  // ────────────────────────────────
+  // 5) Funciones de Quiz
+  // ────────────────────────────────
   const startQuiz = quiz => {
+    // Comprobar bloqueo
+    const idx = quizzes.findIndex(q => q.id === quiz.id);
+    if (idx > 0 && localStorage.getItem(quizzes[idx - 1].id) !== 'done') {
+      return setShowLockModal(true);
+    }
     setCurrentQuiz(quiz);
     setQIndex(0);
     setQuizScore(0);
@@ -119,232 +121,192 @@ export default function Activities() {
     setView('quiz');
   };
 
-  // --- Responder pregunta ---
   const answerQuestion = idx => {
-    const correct = currentQuiz.questions[qIndex].answerIndex;
-    const isCorrect = idx === correct;
-    setFeedback(isCorrect ? 'correct' : 'wrong');
-    if (isCorrect) setQuizScore(s => s + currentQuiz.rewardPoints);
+    const ok = idx === currentQuiz.questions[qIndex].answerIndex;
+    setFeedback(ok ? 'correct' : 'wrong');
+    if (ok) setQuizScore(s => s + currentQuiz.rewardPoints);
   };
 
-  // --- Siguiente o finalizar ---
   const nextQuestion = () => {
     setFeedback(null);
     if (qIndex + 1 < currentQuiz.questions.length) {
       setQIndex(i => i + 1);
     } else {
-      // Fin del quiz: mostrar modal
-      const earnedPoints = quizScore;
+      // fin de quiz: marcar completado
+      localStorage.setItem(currentQuiz.id, 'done');
+      const pts = quizScore;
+      setTotalPoints(tp => tp + pts);
+      const newLvl = Math.floor((level + pts) / 100) + 1;
+      setLevel(newLvl);
+      setLastResult({ title: currentQuiz.title, points: pts });
+      setShowQuizModal(true);
 
-      setTotalPoints(tp => tp + quizScore);
-      setLevel(lv => Math.floor((lv + quizScore) / 100) + 1);
-      setLastResult({ title: currentQuiz.title, points: quizScore });
-      setShowModal(true);
-
-      const storedUser = JSON.parse(localStorage.getItem('user'));
-      const userId = storedUser?.id;
-
-      if (userId && earnedPoints > 0) {
-        updateUserProgress(userId, earnedPoints)
+      const u = JSON.parse(localStorage.getItem('user'));
+      if (u?.id && pts > 0) {
+        updateUserProgress(u.id, pts)
           .then(res => {
-            console.log('✅ Progreso actualizado:', res.user);
-            localStorage.setItem('user', JSON.stringify(res.user)); // 👈 Actualizamos localStorage
-            setLevel(res.user.level);
+            localStorage.setItem('user', JSON.stringify(res.user));
             setTotalPoints(res.user.points);
+            setLevel(res.user.level);
           })
-          .catch(err => {
-            console.error('❌ Error al actualizar progreso:', err);
-          });
-
-
+          .catch(console.error);
       }
-    };
-  }
-  // --- Manejo del modal ---
-  const closeModal = () => {
-    setShowModal(false);
+    }
+  };
+
+  const closeQuizModal = () => {
+    setShowQuizModal(false);
     setView('menu');
   };
 
-  // --- Mini-juego Match English–Spanish ---
-  const pairs = [
-    { en: 'CAT', es: 'GATO' },
-    { en: 'DOG', es: 'PERRO' },
-    { en: 'BOOK', es: 'LIBRO' },
-    { en: 'HOUSE', es: 'CASA' }
-  ];
-  const [leftWords, setLeftWords] = useState([]);
-  const [rightWords, setRightWords] = useState([]);
-  const [selLeft, setSelLeft] = useState(null);
-  const [selRight, setSelRight] = useState(null);
-  const [matched, setMatched] = useState([]);
-  const [matchMsg, setMatchMsg] = useState('');
-
-  useEffect(() => {
-    if (view === 'match') {
-      setLeftWords([...pairs.map(p => p.en)].sort(() => Math.random() - .5));
-      setRightWords([...pairs.map(p => p.es)].sort(() => Math.random() - .5));
-      setSelLeft(null);
-      setSelRight(null);
-      setMatched([]);
-      setMatchMsg('');
-    }
-  }, [view]);
-
+  // ────────────────────────────────
+  // 6) Funciones de Match
+  // ────────────────────────────────
   const tryMatch = () => {
-    if (selLeft && selRight) {
-      const correct = pairs.find(p => p.en === selLeft)?.es === selRight;
-  
-      if (correct && !matched.includes(selLeft)) {
-        const newMatched = [...matched, selLeft];
-        setMatched(newMatched);
-        setMatchMsg('✅ ¡Correcto! +15 pts');
-  
-        const storedUser = JSON.parse(localStorage.getItem('user'));
-        const userId = storedUser?.id;
-  
-        //  Suma los puntos actuales +15
-        const currentPoints = storedUser?.points || 0;
-        const updatedPoints = currentPoints + 15;
-        const newLevel = Math.floor(updatedPoints / 100) + 1;
-  
-        if (userId) {
-          updateUserProgress(userId, 15, 'match')
-            .then(res => {
-              console.log('✔ Match guardado', res.user);
-              // 🔄 Actualiza el localStorage manualmente con los nuevos puntos
-              const updatedUser = {
-                ...storedUser,
-                points: updatedPoints,
-                level: newLevel
-              };
-              localStorage.setItem('user', JSON.stringify(updatedUser));
-              setLevel(newLevel);
-              setTotalPoints(updatedPoints);
-            })
-            .catch(err => console.error('❌ Match error:', err));
-        }
-      } else {
-        setMatchMsg('❌ Incorrecto o ya emparejado');
-      }
-  
-      setSelLeft(null);
-      setSelRight(null);
+    if (!selLeft || !selRight) return;
+    const ok = pairs.find(p => p.en === selLeft).es === selRight;
+    if (ok && !matched.includes(selLeft)) {
+      setMatched(m => [...m, selLeft]);
+      setTotalPoints(tp => tp + 10);
+      setLevel(lv => Math.floor((lv + 10) / 100) + 1);
+      setMatchMsg('✅ ¡Bien!');
+    } else {
+      setMatchMsg('❌ Intenta de nuevo');
     }
+    setSelLeft(null); setSelRight(null);
   };
-  
-  
-  
 
-  // --- Renderizado ---
-  // 1) Modal final de quiz
-  if (showModal) {
+  // ────────────────────────────────
+  // 7) Renderizado Condicional
+  // ────────────────────────────────
+
+  // 7.1) Modal de bloqueo
+  if (showLockModal) {
+    return (
+      <div className="modal-overlay">
+        <div className="modal-box">
+          <h2>🚫 ¡Espera!</h2>
+          <p>No tan rápido: desbloquea la actividad anterior primero.</p>
+          <button onClick={() => setShowLockModal(false)}>Entendido</button>
+        </div>
+      </div>
+    );
+  }
+
+  // 7.2) Modal fin de quiz
+  if (showQuizModal) {
     return (
       <div className="modal-overlay">
         <div className="modal-box">
           <h2>🎉 ¡Quiz Completado!</h2>
           <p>
-            Ganaste <strong>{lastResult.points}</strong> puntos en<br />
-            <span className="quiz-name">{lastResult.title}</span>
+            Ganaste <strong>{lastResult.points}</strong> pts en<br/>
+            <em>{lastResult.title}</em>
           </p>
-          <button className="next-btn" onClick={closeModal}>
-            Volver al Menú
-          </button>
+          <button onClick={closeQuizModal}>Volver al Menú</button>
         </div>
       </div>
     );
   }
 
-  // 2) Quiz
+  // 7.3) Vista Quiz
   if (view === 'quiz' && currentQuiz) {
-    const { question, options, answerIndex } = currentQuiz.questions[qIndex];
+    const q = currentQuiz.questions[qIndex];
     return (
       <div className="actg-container">
         <h2 className="title neon">{currentQuiz.title}</h2>
         <div className="status">
-          Pregunta {qIndex + 1}/{currentQuiz.questions.length} · Nivel {level} · Pts {totalPoints}
+          P {qIndex + 1}/{currentQuiz.questions.length} · Lv {level} · Pts {totalPoints}
         </div>
-        <p className="question">{question}</p>
+        <p className="question">{q.question}</p>
         <div className="opts-grid">
-          {options.map((opt, i) => (
+          {q.options.map((opt,i) => (
             <button
               key={i}
-              className={
-                feedback === 'correct' && i === answerIndex
-                  ? 'opt correct'
-                  : feedback === 'wrong' && i !== answerIndex
-                    ? 'opt wrong'
-                    : 'opt'
-              }
-              onClick={() => feedback === null && answerQuestion(i)}
-              disabled={feedback !== null}
-            >
-              {opt}
-            </button>
+              className={`opt ${
+                feedback==='correct' && i===q.answerIndex?'correct':''} ${
+                feedback==='wrong'   && i!==q.answerIndex?'wrong':''}`}
+              disabled={feedback!==null}
+              onClick={()=>answerQuestion(i)}
+            >{opt}</button>
           ))}
         </div>
         {feedback && (
-          <button className="next-btn" onClick={nextQuestion}>
-            {qIndex + 1 < currentQuiz.questions.length ? 'Siguiente' : 'Finalizar'}
-          </button>
+          <div className="feedback">
+            <img
+              src={feedback==='correct'?cocodriloFeliz:cocodriloTriste}
+              alt={feedback}
+              style={{ width: 120, margin: '1rem 0' }}
+            />
+            <p>{feedback==='correct'?'¡Bien hecho!':'Inténtalo de nuevo'}</p>
+            <button onClick={nextQuestion}>
+              {qIndex+1<currentQuiz.questions.length?'Siguiente':'Terminar'}
+            </button>
+          </div>
         )}
       </div>
     );
   }
 
-  // 3) Match game
+  // 7.4) Vista Match
   if (view === 'match') {
     return (
       <div className="actg-container">
-        <h2 className="title neon">Match English - Español</h2>
-        <div className="status">Nivel {level} · Pts {totalPoints}</div>
+        <h2 className="title neon">Match English–Español</h2>
+        <div className="status">Lv {level} · Pts {totalPoints}</div>
         <div className="match-grid">
           <div className="col">
-            {leftWords.map(w => (
+            {leftWords.map(w=>(
               <div
                 key={w}
-                className={`cell ${matched.includes(w) ? 'matched' : ''} ${selLeft === w ? 'sel' : ''}`}
-                onClick={() => !matched.includes(w) && setSelLeft(w)}
+                className={`cell ${matched.includes(w)?'matched':''} ${selLeft===w?'sel':''}`}
+                onClick={()=>!matched.includes(w)&&setSelLeft(w)}
               >{w}</div>
             ))}
           </div>
           <div className="col">
-            {rightWords.map(w => (
+            {rightWords.map(w=>(
               <div
                 key={w}
-                className={`cell ${matched.includes(pairs.find(p => p.es === w).en) ? 'matched' : ''} ${selRight === w ? 'sel' : ''}`}
-                onClick={() => !matched.includes(pairs.find(p => p.es === w).en) && setSelRight(w)}
+                className={`cell ${
+                  matched.includes(pairs.find(p=>p.es===w).en)?'matched':''} ${
+                  selRight===w?'sel':''}`}
+                onClick={()=>!matched.includes(pairs.find(p=>p.es===w).en)&&setSelRight(w)}
               >{w}</div>
             ))}
           </div>
         </div>
         <button className="match-btn" onClick={tryMatch}>Emparejar</button>
         {matchMsg && <p className="match-msg">{matchMsg}</p>}
-        {matched.length === pairs.length && (
-          <button className="next-btn" onClick={() => setView('menu')}>
-            ¡Completado! Volver al menú
-          </button>
+        {matched.length===pairs.length && (
+          <button onClick={()=>setView('menu')}>¡Completado! Menú</button>
         )}
       </div>
     );
   }
 
-  // 4) Menú principal
+  // 7.5) Menú Principal con bloqueo
   return (
     <div className="actg-container">
       <h1 className="title neon">ACTIVIDADES GAMER</h1>
       <div className="menu-grid">
-        {quizzes.map(q => (
-          <button key={q.id} className="menu-btn" onClick={() => startQuiz(q)}>
-            Quiz: {q.title}
-          </button>
-        ))}
-        <button className="menu-btn game-btn" onClick={() => setView('match')}>
+        {quizzes.map((q, idx) => {
+          const locked = idx > 0 && localStorage.getItem(quizzes[idx - 1].id) !== 'done';
+          return (
+            <button
+              key={q.id}
+              className={`menu-btn${locked?' locked':''}`}
+              onClick={() => startQuiz(q)}
+            >
+              {locked ? '🔒 ' : ''}Quiz: {q.title}
+            </button>
+          );
+        })}
+        <button className="menu-btn game-btn" onClick={()=>setView('match')}>
           Juego: Empareja Palabras
         </button>
       </div>
-      <div className="footer-status">Nivel {level} · Puntos totales: {totalPoints}</div>
+      <div className="footer-status">Nivel {level} · Puntos: {totalPoints}</div>
     </div>
   );
 }
-

@@ -1,6 +1,7 @@
 // src/components/LayoutUserProfile.jsx
 import React from 'react';
 import { Outlet, Link } from 'react-router-dom';
+import './LayoutUserProfile.css';  // <-- IMPORTA AQUÍ
 
 export default function LayoutUserProfile() {
   return (
@@ -15,7 +16,6 @@ export default function LayoutUserProfile() {
         </nav>
       </header>
       <main>
-        {/* Aquí React Router inyectará Activities, WeeklyChallenges, etc. */}
         <Outlet />
       </main>
       <footer>© 2025 Gamify English</footer>

@@ -1,0 +1,34 @@
+.badges-container {
+    padding: 20px;
+    text-align: center;
+}
+
+.badges-grid {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 15px;
+    justify-content: center;
+    margin-top: 20px;
+}
+
+.badge-card {
+    background: #f5f5f5;
+    padding: 15px;
+    border-radius: 12px;
+    width: 120px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+    transition: transform 0.2s ease;
+}
+
+.badge-card:hover {
+    transform: scale(1.05);
+}
+
+.badge-icon {
+    font-size: 2.5rem;
+}
+
+.badge-name {
+    margin-top: 10px;
+    font-weight: bold;
+}

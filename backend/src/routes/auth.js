@@ -1,8 +1,10 @@
+// ✅ auth.js COMPLETO con insignias automáticas
 const express = require('express');
 const router = express.Router();
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 const User = require('../models/User');
+
 // Registro
 router.post('/register', async(req, res) => {
     const { role, name, email, password, childId } = req.body;
@@ -26,6 +28,7 @@ router.post('/register', async(req, res) => {
         res.status(500).send('Error en el servidor');
     }
 });
+
 // Login
 router.post('/login', async(req, res) => {
     const { email, password } = req.body;
@@ -41,17 +44,17 @@ router.post('/login', async(req, res) => {
         res.status(500).send('Error en el servidor');
     }
 });
-// Ruta protegida para editar perfil
+
+// Editar perfil
 router.put('/update-profile', async(req, res) => {
     try {
         const authHeader = req.headers.authorization;
         const token = authHeader && authHeader.split(' ')[1];
-
-
         if (!token) return res.status(401).json({ msg: 'Token no proporcionado' });
         const decoded = jwt.verify(token, process.env.JWT_SECRET);
         const user = await User.findById(decoded.id);
         if (!user) return res.status(404).json({ msg: 'Usuario no encontrado' });
+
         const { name, avatar, password } = req.body;
         if (name) user.name = name;
         if (avatar !== undefined) user.avatar = avatar;
@@ -60,7 +63,6 @@ router.put('/update-profile', async(req, res) => {
             user.passwordHash = hash;
         }
         await user.save();
-        // Devuelve datos actualizados
         res.json({
             id: user._id,
             name: user.name,
@@ -77,16 +79,30 @@ router.put('/update-profile', async(req, res) => {
     }
 });
 
-// Actualizar puntos y nivel
+// ✅ ACTUALIZAR PROGRESO CON INSIGNIAS
 router.put('/update-progress/:id', async(req, res) => {
     const { points, type } = req.body;
-    console.log(`Recibido update de puntos: ${points}`);
     try {
         const user = await User.findById(req.params.id);
         if (!user) return res.status(404).json({ msg: 'Usuario no encontrado' });
+
         user.points += points;
         user.level = Math.floor(user.points / 100) + 1;
-        console.log(`📥 Progreso recibido: +${points} pts (${type}) para ${user.name}`);
+
+        const newBadges = [];
+        if (user.points >= 20 && !user.badges.includes('Explorador')) {
+            newBadges.push('Explorador');
+        }
+        if (user.points >= 50 && !user.badges.includes('Aprendiz Destacado')) {
+            newBadges.push('Aprendiz Destacado');
+        }
+        if (user.points >= 100 && !user.badges.includes('Maestro del Inglés')) {
+            newBadges.push('Maestro del Inglés');
+        }
+        if (newBadges.length > 0) {
+            user.badges.push(...newBadges);
+        }
+
         await user.save();
         res.json({ msg: 'Progreso actualizado', user });
     } catch (err) {

@@ -82,12 +82,14 @@ router.put('/update-profile', async(req, res) => {
 // ✅ ACTUALIZAR PROGRESO CON INSIGNIAS
 router.put('/update-progress/:id', async(req, res) => {
     const { points, type } = req.body;
+    console.log(`Recibido update de puntos: ${points}`);
     try {
         const user = await User.findById(req.params.id);
         if (!user) return res.status(404).json({ msg: 'Usuario no encontrado' });
 
         user.points += points;
         user.level = Math.floor(user.points / 100) + 1;
+        console.log(`📥 Progreso recibido: +${points} pts (${type}) para ${user.name}`);
 
         const newBadges = [];
         if (user.points >= 20 && !user.badges.includes('Explorador')) {
@@ -110,5 +112,18 @@ router.put('/update-progress/:id', async(req, res) => {
         res.status(500).json({ msg: 'Error del servidor' });
     }
 });
+
+// Obtener usuario por ID
+router.get('/:id', async (req, res) => {
+  try {
+    const user = await User.findById(req.params.id);
+    if (!user) return res.status(404).json({ msg: 'Usuario no encontrado' });
+    res.json(user);
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ msg: 'Error del servidor' });
+  }
+});
+
 
 module.exports = router;

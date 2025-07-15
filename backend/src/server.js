@@ -27,6 +27,7 @@ app.use((err, req, res, next) => {
     console.error(err.stack);
     res.status(500).json({ msg: err.message });
 });
+
 // Puesto de escucha
 const PORT = process.env.PORT || 4000;
 app.listen(PORT, () => console.log(`🔊 Server escuchando en puerto ${PORT}`));

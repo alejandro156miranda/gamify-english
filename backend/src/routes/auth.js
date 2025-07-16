@@ -31,17 +31,38 @@ router.post('/register', async(req, res) => {
 
 // Login
 router.post('/login', async(req, res) => {
-    const { email, password } = req.body;
     try {
+        const { email, password } = req.body;
         const user = await User.findOne({ email });
-        if (!user) return res.status(400).json({ msg: 'Usuario no encontrado' });
+
+        if (!user) {
+            return res.status(404).json({ msg: 'Usuario no encontrado' });
+        }
+
         const isMatch = await bcrypt.compare(password, user.passwordHash);
-        if (!isMatch) return res.status(400).json({ msg: 'Contraseña incorrecta' });
+        if (!isMatch) {
+            return res.status(401).json({ msg: 'Credenciales incorrectas' });
+        }
+
         const token = jwt.sign({ id: user._id }, process.env.JWT_SECRET, { expiresIn: '1d' });
-        res.json({ token, user: { id: user._id, role: user.role, name: user.name, email } });
+
+        // Devolver los datos completos del usuario
+        res.json({
+            token,
+            user: {
+                id: user._id,
+                name: user.name,
+                email: user.email,
+                points: user.points,
+                level: user.level,
+                badges: user.badges,
+                avatar: user.avatar,
+                completedChallenges: user.completedChallenges,
+            },
+        });
     } catch (err) {
-        console.error(err);
-        res.status(500).send('Error en el servidor');
+        console.error('❌ Error al iniciar sesión:', err);
+        res.status(500).json({ msg: 'Error del servidor' });
     }
 });
 

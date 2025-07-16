@@ -16,12 +16,16 @@ export const updateUserProgress = async (userId, points, type = 'quiz') => {
     return res.data;
   };
   export const getWeeklyChallenge = async () => {
-    const res = await API2.get('/api/challenges/weekly');
-    return res.data;
-  };
+    try {
+        const res = await API2.get('/api/challenges');
+        return res.data;
+    } catch (err) {
+        console.error('❌ Error al obtener el reto semanal:', err);
+        throw err;
+    }
+};
   
   export const completeChallenge = async (challengeId, userId) => {
     const res = await API2.post(`/api/challenges/weekly/complete/${challengeId}`, { userId });
     return res.data;
   };
-  

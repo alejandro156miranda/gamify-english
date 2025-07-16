@@ -45,21 +45,23 @@ router.post('/', async(req, res, next) => {
     }
 });
 
-
 // Obtener reto semanal actual según mes
 router.get('/weekly', async (req, res) => {
     try {
-      const currentMonth = new Date().toISOString().slice(0, 7); // '2025-07'
-      const challenge = await Challenge.findOne({ type: 'weekly', month: currentMonth });
-      if (!challenge) return res.status(404).json({ msg: 'No hay reto semanal disponible' });
-      res.json(challenge);
+        const currentMonth = new Date().toISOString().slice(0, 7); // Ejemplo: "2025-07"
+        const challenge = await Challenge.findOne({ type: 'weekly', month: currentMonth });
+        if (!challenge) {
+            return res.status(404).json({ msg: 'No hay reto semanal disponible' });
+        }
+        res.json(challenge);
     } catch (err) {
-      res.status(500).json({ msg: 'Error del servidor' });
+        console.error('❌ Error al obtener el reto semanal:', err);
+        res.status(500).json({ msg: 'Error del servidor' });
     }
-  });
+});
   
-  // Marcar reto semanal como completado por usuario
-  router.post('/weekly/complete/:id', async (req, res) => {
+// Marcar reto semanal como completado por usuario
+router.post('/weekly/complete/:id', async (req, res) => {
     try {
       const { userId } = req.body;
       const challengeId = req.params.id;

@@ -150,17 +150,21 @@ export default function Activities() {
 
       const u = JSON.parse(localStorage.getItem('user'));
       if (u?.id && pts > 0) {
-        console.log('🎯 Enviando puntos al backend:', pts);
-
-        updateUserProgress(u.id, pts)
+        updateUserProgress(u.id, pts, 'quiz')
           .then(res => {
             console.log('✅ Progreso actualizado:', res.user);
-            localStorage.setItem('user', JSON.stringify(res.user));
-            setTotalPoints(res.user.points);
-            setLevel(res.user.level);
+            const oldUser = JSON.parse(localStorage.getItem('user'));
+            const updatedUser = { ...oldUser, ...res.user };
+            localStorage.setItem('user', JSON.stringify(updatedUser));
+            setTotalPoints(updatedUser.points);
+            setLevel(updatedUser.level);
           })
+
           .catch(console.error);
       }
+
+      setLastResult({ title: currentQuiz.title, points: pts });
+      setShowQuizModal(true);
     }
   };
 
@@ -188,39 +192,42 @@ export default function Activities() {
   };
   const tryMatch = () => {
     if (!selLeft || !selRight) return;
-  
+
     const ok = pairs.find(p => p.en === selLeft)?.es === selRight;
-  
+
     if (ok && !matched.includes(selLeft)) {
       const updatedMatched = [...matched, selLeft];
       setMatched(updatedMatched);
       setMatchMsg('✅ ¡Bien! +10 pts');
-  
+
       const storedUser = JSON.parse(localStorage.getItem('user'));
       const userId = storedUser?.id;
-  
+
       if (userId) {
         updateUserProgress(userId, 10, 'match')
           .then(res => {
             const updatedUser = res.user;
             console.log('✔ Puntos match subidos desde backend:', updatedUser);
-            localStorage.setItem('user', JSON.stringify(updatedUser));
-            setTotalPoints(updatedUser.points);
-            setLevel(updatedUser.level);
+            const oldUser = JSON.parse(localStorage.getItem('user'));
+            const mergedUser = { ...oldUser, ...updatedUser };
+            localStorage.setItem('user', JSON.stringify(mergedUser));
+            setTotalPoints(mergedUser.points);
+            setLevel(mergedUser.level);
+
           })
           .catch(err => console.error('❌ Error al subir puntos match:', err));
       }
-  
+
       if (updatedMatched.length === pairs.length) {
         localStorage.setItem('done-match', 'true');
         alert('🎉 ¡Felicidades! Completaste el juego de emparejar.');
         setView('menu');
       }
-  
+
     } else {
       setMatchMsg('❌ Intenta de nuevo');
     }
-  
+
     setSelLeft(null);
     setSelRight(null);
   };

@@ -10,7 +10,8 @@ const UserSchema = new mongoose.Schema({
     level: { type: Number, default: 1 },
     badges: [{ type: String }], // ← Insignias como array de strings
     avatar: { type: String, default: null },
-    createdAt: { type: Date, default: Date.now }
+    createdAt: { type: Date, default: Date.now },
+    completedChallenges: { type: [String], default: [] } // IDs de retos completados
 });
 
 module.exports = mongoose.model('User', UserSchema);

@@ -1,0 +1,377 @@
+/* src/components/LayoutUser.css */
+
+
+/* Contenedor principal con clase específica */
+
+.layout-user-container {
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+    background: linear-gradient(135deg, #0f0c29, #080617);
+    color: white;
+    position: relative;
+    overflow-x: hidden;
+}
+
+
+/* Partículas de fondo */
+
+.layout-user-container .particles-background {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+    z-index: 0;
+}
+
+.layout-user-container .particle {
+    position: absolute;
+    background: #00f3ff;
+    border-radius: 50%;
+    opacity: 0.3;
+    bottom: 0;
+    animation: float-up linear infinite;
+    box-shadow: 0 0 10px #00f3ff;
+    width: var(--size);
+    height: var(--size);
+    left: var(--left);
+    animation-duration: var(--duration);
+    animation-delay: var(--delay);
+}
+
+@keyframes float-up {
+    0% {
+        transform: translateY(0) translateX(0);
+        opacity: 0;
+    }
+    10% {
+        opacity: 0.3;
+    }
+    90% {
+        opacity: 0.3;
+    }
+    100% {
+        transform: translateY(-100vh) translateX(20px);
+        opacity: 0;
+    }
+}
+
+
+/* Header */
+
+.layout-user-container .gamer-header {
+    padding: 20px 30px;
+    background: rgba(15, 10, 40, 0.85);
+    border-bottom: 2px solid #00f3ff;
+    box-shadow: 0 0 20px rgba(0, 243, 255, 0.3);
+    position: sticky;
+    top: 0;
+    z-index: 100;
+}
+
+.layout-user-container .header-content {
+    max-width: 1200px;
+    margin: 0 auto;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.layout-user-container .logo {
+    display: flex;
+    flex-direction: column;
+    text-decoration: none;
+}
+
+.layout-user-container .logo-text {
+    font-size: 2.5rem;
+    font-weight: 800;
+    background: linear-gradient(to right, #00f3ff, #ffde00);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    text-shadow: 0 0 10px rgba(0, 243, 255, 0.5);
+}
+
+.layout-user-container .logo-subtitle {
+    font-size: 0.9rem;
+    color: #ffde00;
+    letter-spacing: 1px;
+    margin-top: -5px;
+    text-align: right;
+}
+
+
+/* Menú de navegación */
+
+.layout-user-container .nav-menu {
+    display: flex;
+    gap: 15px;
+}
+
+.layout-user-container .nav-link {
+    display: flex;
+    align-items: center;
+    padding: 10px 20px;
+    border-radius: 30px;
+    text-decoration: none;
+    color: #ddd;
+    font-weight: 600;
+    transition: all 0.3s ease;
+    position: relative;
+    overflow: hidden;
+    background: rgba(0, 0, 0, 0.3);
+}
+
+.layout-user-container .nav-link:hover {
+    background: rgba(0, 0, 0, 0.5);
+    transform: translateY(-3px);
+    box-shadow: 0 5px 15px rgba(0, 243, 255, 0.3);
+}
+
+.layout-user-container .nav-link.active {
+    background: rgba(0, 243, 255, 0.15);
+    color: #00f3ff;
+    box-shadow: 0 0 15px rgba(0, 243, 255, 0.5);
+}
+
+.layout-user-container .nav-link.active .link-icon {
+    transform: scale(1.2);
+}
+
+.layout-user-container .link-icon {
+    font-size: 1.2rem;
+    margin-right: 8px;
+    transition: transform 0.3s ease;
+}
+
+.layout-user-container .link-text {
+    position: relative;
+    z-index: 2;
+}
+
+.layout-user-container .nav-link::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(45deg, #00f3ff, transparent);
+    opacity: 0.1;
+    transition: opacity 0.3s ease;
+}
+
+.layout-user-container .nav-link:hover::before {
+    opacity: 0.3;
+}
+
+
+/* Mascota */
+
+.layout-user-container .mascota-container {
+    position: relative;
+    z-index: 2;
+    padding: 30px;
+    display: flex;
+    justify-content: center;
+    margin-top: -30px;
+}
+
+.layout-user-container .mascota-card {
+    background: rgba(21, 16, 48, 0.7);
+    border-radius: 20px;
+    padding: 20px;
+    display: flex;
+    align-items: center;
+    gap: 25px;
+    box-shadow: 0 0 25px rgba(0, 243, 255, 0.3);
+    border: 2px solid #00f3ff;
+    max-width: 800px;
+    width: 100%;
+}
+
+.layout-user-container .mascota-img {
+    width: 120px;
+    height: auto;
+    border-radius: 50%;
+    border: 3px solid #ffde00;
+    box-shadow: 0 0 20px rgba(255, 222, 0, 0.5);
+    transition: transform 0.3s ease;
+}
+
+.layout-user-container .mascota-img:hover {
+    transform: scale(1.05) rotate(5deg);
+}
+
+.layout-user-container .speech-bubble {
+    position: relative;
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 20px;
+    padding: 15px 25px;
+    border: 2px solid #da1b60;
+    flex-grow: 1;
+}
+
+.layout-user-container .speech-bubble::before {
+    content: '';
+    position: absolute;
+    left: -20px;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 0;
+    height: 0;
+    border-top: 15px solid transparent;
+    border-bottom: 15px solid transparent;
+    border-right: 20px solid #da1b60;
+}
+
+.layout-user-container .mascota-text {
+    font-size: 1.3rem;
+    color: #ffde00;
+    text-shadow: 0 0 5px rgba(255, 222, 0, 0.5);
+    font-weight: 600;
+    line-height: 1.5;
+}
+
+
+/* Contenido principal */
+
+.layout-user-container .main-content {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    padding: 30px;
+    position: relative;
+    z-index: 1;
+    max-width: 1200px;
+    margin: 0 auto;
+    width: 100%;
+}
+
+
+/* Footer */
+
+.layout-user-container .gamer-footer {
+    background: linear-gradient(to top, rgba(10, 5, 30, 0.9), rgba(15, 10, 40, 0.7));
+    padding: 40px 20px 20px;
+    color: #aaa;
+    border-top: 2px solid #da1b60;
+    box-shadow: 0 0 20px rgba(218, 27, 96, 0.2);
+    position: relative;
+    overflow: hidden;
+}
+
+.layout-user-container .footer-content {
+    max-width: 1200px;
+    margin: 0 auto;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 20px;
+    position: relative;
+    z-index: 2;
+}
+
+.layout-user-container .footer-links {
+    display: flex;
+    gap: 25px;
+    flex-wrap: wrap;
+    justify-content: center;
+}
+
+.layout-user-container .footer-links a {
+    color: #00f3ff;
+    text-decoration: none;
+    transition: color 0.3s ease;
+}
+
+.layout-user-container .footer-links a:hover {
+    color: #ffde00;
+    text-shadow: 0 0 10px rgba(255, 222, 0, 0.5);
+}
+
+.layout-user-container .social-links {
+    display: flex;
+    gap: 25px;
+    margin: 15px 0;
+}
+
+.layout-user-container .social-icon {
+    font-size: 1.8rem;
+    color: #00f3ff;
+    transition: transform 0.3s ease;
+    text-decoration: none;
+    display: inline-block;
+}
+
+.layout-user-container .social-icon:hover {
+    transform: translateY(-5px) scale(1.2);
+    color: #ffde00;
+}
+
+.layout-user-container .copyright {
+    text-align: center;
+    font-size: 0.9rem;
+    max-width: 600px;
+    line-height: 1.6;
+}
+
+
+/* Responsive */
+
+@media (max-width: 900px) {
+    .layout-user-container .header-content {
+        flex-direction: column;
+        gap: 20px;
+    }
+    .layout-user-container .nav-menu {
+        flex-wrap: wrap;
+        justify-content: center;
+    }
+    .layout-user-container .mascota-card {
+        flex-direction: column;
+        text-align: center;
+    }
+    .layout-user-container .speech-bubble::before {
+        left: 50%;
+        top: -20px;
+        transform: translateX(-50%);
+        border-left: 15px solid transparent;
+        border-right: 15px solid transparent;
+        border-bottom: 20px solid #da1b60;
+        border-top: none;
+    }
+}
+
+@media (max-width: 600px) {
+    .layout-user-container .logo-text {
+        font-size: 2rem;
+    }
+    .layout-user-container .nav-menu {
+        gap: 10px;
+    }
+    .layout-user-container .nav-link {
+        padding: 8px 15px;
+        font-size: 0.9rem;
+    }
+    .layout-user-container .mascota-container {
+        padding: 15px;
+    }
+    .layout-user-container .mascota-card {
+        padding: 15px;
+    }
+    .layout-user-container .mascota-text {
+        font-size: 1.1rem;
+    }
+    .layout-user-container .main-content {
+        padding: 20px 15px;
+    }
+    .layout-user-container .footer-links {
+        gap: 15px;
+    }
+}

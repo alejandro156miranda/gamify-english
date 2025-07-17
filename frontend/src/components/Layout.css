@@ -1,0 +1,257 @@
+/* src/components/Layout.css */
+
+.gamified-layout {
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+    background: linear-gradient(135deg, #0f0c29, #080617);
+    color: #fff;
+    position: relative;
+    overflow-x: hidden;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+
+/* Fondo con partículas animadas */
+
+.particles-background {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 1;
+    pointer-events: none;
+    overflow: hidden;
+}
+
+.particle {
+    position: absolute;
+    background: rgba(0, 243, 255, 0.5);
+    border-radius: 50%;
+    width: var(--size);
+    height: var(--size);
+    left: var(--left);
+    top: -20px;
+    animation: floatDown var(--duration) linear infinite;
+    animation-delay: var(--delay);
+}
+
+@keyframes floatDown {
+    to {
+        transform: translateY(calc(100vh + 20px));
+    }
+}
+
+
+/* Header con efecto neón */
+
+.gamer-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 15px 30px;
+    background: rgba(15, 10, 40, 0.85);
+    border-bottom: 2px solid #00f3ff;
+    box-shadow: 0 0 20px rgba(0, 243, 255, 0.3);
+    position: sticky;
+    top: 0;
+    z-index: 100;
+}
+
+.logo {
+    font-size: 2.5rem;
+    font-weight: 800;
+    background: linear-gradient(to right, #00f3ff, #ffde00);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    text-shadow: 0 0 10px rgba(0, 243, 255, 0.5);
+    text-decoration: none;
+    display: flex;
+    flex-direction: column;
+}
+
+.logo-subtitle {
+    font-size: 0.9rem;
+    color: #ffde00;
+    letter-spacing: 1px;
+    margin-top: -5px;
+}
+
+
+/* Menú de navegación */
+
+.nav-menu {
+    display: flex;
+    gap: 15px;
+}
+
+.nav-link {
+    display: flex;
+    align-items: center;
+    padding: 10px 20px;
+    border-radius: 30px;
+    text-decoration: none;
+    color: #ddd;
+    font-weight: 600;
+    transition: all 0.3s ease;
+    position: relative;
+    overflow: hidden;
+    background: rgba(0, 0, 0, 0.3);
+}
+
+.nav-link:hover {
+    background: rgba(0, 0, 0, 0.5);
+    transform: translateY(-3px);
+    box-shadow: 0 5px 15px rgba(0, 243, 255, 0.3);
+}
+
+.link-icon {
+    font-size: 1.2rem;
+    margin-right: 8px;
+    transition: transform 0.3s ease;
+}
+
+
+/* Contenedor de mascota */
+
+.mascota-container {
+    display: flex;
+    justify-content: center;
+    padding: 20px;
+    position: relative;
+    z-index: 2;
+}
+
+.mascota-card {
+    background: rgba(25, 20, 50, 0.7);
+    border-radius: 20px;
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    box-shadow: 0 0 25px rgba(0, 243, 255, 0.4);
+    border: 2px solid #ffde00;
+    animation: pulse 3s infinite;
+}
+
+@keyframes pulse {
+    0% {
+        box-shadow: 0 0 25px rgba(0, 243, 255, 0.4);
+    }
+    50% {
+        box-shadow: 0 0 35px rgba(0, 243, 255, 0.7);
+    }
+    100% {
+        box-shadow: 0 0 25px rgba(0, 243, 255, 0.4);
+    }
+}
+
+.mascota-img {
+    width: 120px;
+    height: auto;
+    border-radius: 50%;
+    border: 3px solid #00f3ff;
+}
+
+.speech-bubble {
+    position: relative;
+    background: rgba(255, 255, 255, 0.9);
+    border-radius: 10px;
+    padding: 12px;
+    margin-top: 15px;
+    color: #333;
+    font-weight: 600;
+    text-align: center;
+    max-width: 250px;
+    box-shadow: 0 3px 10px rgba(0, 0, 0, 0.2);
+}
+
+.speech-bubble::after {
+    content: '';
+    position: absolute;
+    top: -10px;
+    left: 50%;
+    transform: translateX(-50%);
+    border-width: 0 10px 10px 10px;
+    border-style: solid;
+    border-color: transparent transparent rgba(255, 255, 255, 0.9) transparent;
+}
+
+.mascota-text {
+    margin: 0;
+    font-size: 0.95rem;
+}
+
+
+/* Contenido principal */
+
+.main-content {
+    flex: 1;
+    padding: 20px;
+    position: relative;
+    z-index: 2;
+    max-width: 1200px;
+    margin: 0 auto;
+    width: 100%;
+}
+
+
+/* Footer minimalista */
+
+.minimal-footer {
+    background: rgba(10, 5, 30, 0.9);
+    padding: 15px;
+    color: #aaa;
+    text-align: center;
+    font-size: 0.85rem;
+    position: relative;
+    z-index: 10;
+    border-top: 1px solid rgba(0, 243, 255, 0.3);
+}
+
+
+/* Efectos para pantallas pequeñas */
+
+@media (max-width: 768px) {
+    .gamer-header {
+        flex-direction: column;
+        padding: 15px;
+        gap: 15px;
+    }
+    .nav-menu {
+        width: 100%;
+        justify-content: center;
+    }
+    .logo {
+        font-size: 2rem;
+        text-align: center;
+    }
+    .mascota-card {
+        padding: 15px;
+    }
+    .mascota-img {
+        width: 100px;
+    }
+    .speech-bubble {
+        max-width: 200px;
+        font-size: 0.85rem;
+    }
+}
+
+@media (max-width: 480px) {
+    .nav-menu {
+        flex-direction: column;
+        align-items: center;
+    }
+    .nav-link {
+        width: 100%;
+        justify-content: center;
+    }
+    .mascota-card {
+        width: 90%;
+    }
+}

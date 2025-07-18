@@ -20,7 +20,7 @@ export default function AdminPanel() {
         <Outlet />
       </main>
       <footer className={styles['admin-footer']}>
-        © {new Date().getFullYear()} TuApp - Panel Administrativo
+        © {new Date().getFullYear()} Gamify English - Todos los derechos reservados
       </footer>
     </div>
   );

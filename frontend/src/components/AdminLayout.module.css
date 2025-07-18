@@ -1,0 +1,184 @@
+/* AdminLayout.css */
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap');
+:root {
+  --admin-primary: #352bff;  /* Índigo */
+  --admin-dark: #1e1b4b;     /* Índigo oscuro */
+  --admin-light: #a5b4fc;    /* Índigo claro */
+  --admin-bg: #f8fafc;       /* Gris muy claro */
+  --admin-text: #1e293b;     /* Gris oscuro */
+  --admin-text-light: #64748b;
+  --admin-border: #e2e8f0;
+  --admin-success: #10b981;
+  --admin-warning: #f59e0b;
+  --admin-error: #ef4444;
+  --admin-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+  --admin-radius: 0.5rem;
+  --admin-transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+
+
+/* Reset para el contenedor principal */
+.admin-container,
+.admin-container * {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+.admin-container {
+  display: grid;
+  grid-template-areas:
+    "header header"
+    "nav main"
+    "footer footer";
+  grid-template-columns: 240px 1fr;
+  grid-template-rows: auto 1fr auto;
+  min-height: 100vh;
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+  background-color: var(--admin-bg);
+  color: var(--admin-text);
+}
+
+/* Header */
+.admin-header {
+  grid-area: header;
+  background-color: var(--admin-dark);
+  color: white;
+  padding: 1.2rem 2rem;
+  box-shadow: var(--admin-shadow);
+  display: flex;
+  align-items: center;
+  z-index: 10;
+}
+
+.admin-header h2 {
+  font-size: 1.5rem;
+  font-weight: 600;
+  letter-spacing: -0.025em;
+  color:var(--admin-border)
+}
+
+/* Navigation */
+.admin-nav {
+  grid-area: nav;
+  background-color: whitesmoke solid;
+  border-right: 1px solid var(--admin-border);
+  padding: 1.5rem 0;
+  height: 100%;
+}
+
+.admin-nav ul {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  list-style: none;
+}
+
+.admin-nav li {
+  transition: var(--admin-transition);
+}
+
+.admin-nav a {
+  display: flex;
+  align-items: center;
+  padding: 0.75rem 1.5rem;
+  color: var(--admin-text);
+  text-decoration: none;
+  font-weight: 500;
+  transition: var(--admin-transition);
+}
+
+.admin-nav a:hover {
+  color: var(--admin-primary);
+  background-color: rgba(79, 70, 229, 0.05);
+  border-left-color: var(--admin-primary);
+}
+
+.admin-nav a.active {
+  color: var(--admin-primary);
+  background-color: rgba(29, 29, 29, 0.1);
+  border-left-color: var(--admin-primary);
+}
+
+/* Main Content */
+.admin-main {
+  grid-area: main;
+  padding: 2rem;
+  background-color: white;
+  margin: 1rem;
+  border-radius: var(--admin-radius);
+
+}
+
+.admin-main h2 {
+  color: var(--admin-dark);
+  margin-bottom: 1.5rem;
+  font-weight: 600;
+  font-size: 1.25rem;
+}
+
+/* Footer */
+.admin-footer {
+  grid-area: footer;
+  background-color: white;
+  padding: 1rem 2rem;
+  text-align: center;
+  color: var(--admin-text-light);
+  font-size: 0.875rem;
+  border-top: 1px solid var(--admin-border);
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .admin-container {
+    grid-template-areas:
+      "header"
+      "main"
+      "footer";
+    grid-template-columns: 1fr;
+  }
+  
+  .admin-nav {
+    display: none; /* O podrías convertirlo en un menú hamburguesa */
+  }
+  
+  .admin-main {
+    margin: 0.5rem;
+  }
+}
+
+/* Efectos y utilidades */
+.admin-card {
+  background: white;
+  border-radius: var(--admin-radius);
+  box-shadow: var(--admin-shadow);
+  padding: 1.5rem;
+  margin-bottom: 1.5rem;
+}
+
+.admin-btn {
+  background-color: var(--admin-primary);
+  color: white;
+  border: none;
+  padding: 0.625rem 1.25rem;
+  border-radius: var(--admin-radius);
+  font-weight: 500;
+  cursor: pointer;
+  transition: var(--admin-transition);
+}
+
+.admin-btn:hover {
+  background-color: #4338ca;
+  transform: translateY(-1px);
+}
+
+/* Animación sutil para la carga del contenido */
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.admin-main {
+  animation: fadeIn 0.3s ease-out;
+}

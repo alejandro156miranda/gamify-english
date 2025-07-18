@@ -12,13 +12,21 @@ export default function Login() {
   const onSubmit = async e => {
     e.preventDefault();
     try {
-      await login(form);
-      navigate('/Principal');
+      await login(form); // esto ya guarda el usuario en localStorage
+  
+      const user = JSON.parse(localStorage.getItem('user')); // obtenemos el user actualizado
+  
+      if (user?.role === 'admin') {
+        navigate('/admin');
+      } else {
+        navigate('/Principal');
+      }
+  
     } catch {
       setError('Email o contraseña incorrectos');
     }
   };
-
+  
   return (
     <main className="container">
       <h1>Iniciar Sesión</h1>

@@ -23,4 +23,30 @@ export async function login(data) {
   return result;
 }
 
+
+// Leer todos los usuarios
+export const getUsers = async () => {
+  const res = await API.get('/users');
+  return res.data;
+};
+
+// Leer un usuario por ID
+export const getUserById = async id => {
+  const res = await API.get(`/users/${id}`);
+  return res.data;
+};
+
+// Actualizar usuario
+export const updateUser = async (id, data) => {
+  const res = await API.put(`/users/${id}`, data);
+  return res.data;
+};
+
+// Eliminar usuario
+export const deleteUser = async id => {
+  const res = await API.delete(`/users/${id}`);
+  return res.data;
+};
+
+
   

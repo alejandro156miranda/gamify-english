@@ -33,6 +33,8 @@ export default function Register() {
           <select name="role" onChange={onChange} value={form.role}>
             <option value="child">Niño</option>
             <option value="parent">Padre</option>
+            <option value="admin">Administrador</option>
+
           </select>
         </div>
         <div className="form-field">

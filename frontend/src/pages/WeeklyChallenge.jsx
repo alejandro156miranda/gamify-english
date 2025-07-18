@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from 'react';
 import { getWeeklyChallenge, updateUserProgress, completeChallenge } from '../services/challengeService';
-import './WeeklyChallenge.css';
 
 export default function WeeklyChallenge() {
   const [challenge, setChallenge] = useState(null);

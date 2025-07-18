@@ -34,12 +34,26 @@ router.get('/:id', async(req, res, next) => {
     }
 });
 
-// Crear reto (solo admin)
-router.post('/', async(req, res, next) => {
+// Actualizar reto semanal
+router.put('/:id', async (req, res, next) => {
     try {
-        const newCh = new Challenge(req.body);
-        await newCh.save();
-        res.status(201).json(newCh);
+        const updatedChallenge = await Challenge.findByIdAndUpdate(req.params.id, req.body, {
+            new: true, // Devuelve el reto actualizado
+            runValidators: true, // Ejecuta las validaciones del modelo
+        });
+        if (!updatedChallenge) return res.status(404).json({ msg: 'Reto no encontrado' });
+        res.json(updatedChallenge);
+    } catch (err) {
+        next(err);
+    }
+});
+
+// Eliminar reto semanal
+router.delete('/:id', async (req, res, next) => {
+    try {
+        const deletedChallenge = await Challenge.findByIdAndDelete(req.params.id);
+        if (!deletedChallenge) return res.status(404).json({ msg: 'Reto no encontrado' });
+        res.json({ msg: 'Reto eliminado', deletedChallenge });
     } catch (err) {
         next(err);
     }
@@ -57,6 +71,16 @@ router.get('/weekly', async (req, res) => {
     } catch (err) {
         console.error('❌ Error al obtener el reto semanal:', err);
         res.status(500).json({ msg: 'Error del servidor' });
+    }
+});
+// Crear reto (solo admin)
+router.post('/', async (req, res, next) => {
+    try {
+        const newCh = new Challenge(req.body);
+        await newCh.save();
+        res.status(201).json(newCh);
+    } catch (err) {
+        next(err);
     }
 });
   

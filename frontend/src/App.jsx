@@ -5,6 +5,7 @@ import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import Layout from './components/Layout';
 import LayoutUser from './components/LayoutUser';
 import LayoutUserProfile from './components/LayoutUserProfile';
+import AdminLayout from './components/AdminLayout';
 
 import Home from './pages/Home';
 import Register from './pages/Register';
@@ -15,8 +16,12 @@ import Activities from './pages/Activities';
 import WeeklyChallenges from './pages/WeeklyChallenge';
 import UserBadges from './pages/UserBadges';
 import UserProfile from './pages/UserProfile';
+import AdminWeeklyActs from './pages/AdminWeeklyActs';
+import AdminPanel from './pages/AdminPanel';
+import AdminUsers from './pages/AdminUsers'; 
 
 export default function App() {
+
   return (
     <BrowserRouter>
       <Routes>
@@ -26,6 +31,7 @@ export default function App() {
           <Route path="/"        element={<Home />} />
           <Route path="/register"element={<Register />} />
           <Route path="/login"   element={<Login />} />
+          
         </Route>
 
         {/* Principal con LayoutUser */}
@@ -38,7 +44,15 @@ export default function App() {
           <Route path="/user_badges"       element={<UserBadges />} />
           <Route path="/user_profile"      element={<UserProfile />} />
         </Route>
-
+      
+        {/* Rutas de administración */}
+        <Route element={<AdminLayout/>}>
+          <Route path="/admin" element={<AdminPanel />} />
+          <Route path="/admin/users" element={<AdminUsers />} />
+          <Route path="/admin/weekly-challenges" element={<AdminWeeklyActs />} />
+          {/*<Route path="/admin/users" element={<AdminUsers />} />*/}
+          
+        </Route>
       </Routes>
     </BrowserRouter>
   );

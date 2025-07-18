@@ -6,7 +6,7 @@ const jwt = require('jsonwebtoken');
 const User = require('../models/User');
 
 // Registro
-router.post('/register', async(req, res) => {
+router.post('/register', async (req, res) => {
     const { role, name, email, password, childId } = req.body;
     try {
         if (await User.findOne({ email })) {
@@ -30,7 +30,7 @@ router.post('/register', async(req, res) => {
 });
 
 // Login
-router.post('/login', async(req, res) => {
+router.post('/login', async (req, res) => {
     try {
         const { email, password } = req.body;
         const user = await User.findOne({ email });
@@ -58,6 +58,7 @@ router.post('/login', async(req, res) => {
                 badges: user.badges,
                 avatar: user.avatar,
                 completedChallenges: user.completedChallenges,
+                role: user.role,
             },
         });
     } catch (err) {
@@ -67,7 +68,7 @@ router.post('/login', async(req, res) => {
 });
 
 // Editar perfil
-router.put('/update-profile', async(req, res) => {
+router.put('/update-profile', async (req, res) => {
     try {
         const authHeader = req.headers.authorization;
         const token = authHeader && authHeader.split(' ')[1];
@@ -101,7 +102,7 @@ router.put('/update-profile', async(req, res) => {
 });
 
 // ✅ ACTUALIZAR PROGRESO CON INSIGNIAS
-router.put('/update-progress/:id', async(req, res) => {
+router.put('/update-progress/:id', async (req, res) => {
     const { points, type } = req.body;
     console.log(`Recibido update de puntos: ${points}`);
     try {
@@ -134,17 +135,51 @@ router.put('/update-progress/:id', async(req, res) => {
     }
 });
 
+
+
+// Obtener todos los usuarios
+router.get('/users', async (req, res) => {
+    try {
+        const users = await User.find();
+        res.json(users);
+    } catch (err) {
+        console.error(err);
+        res.status(500).json({ msg: 'Error al obtener usuarios' });
+    }
+});
 // Obtener usuario por ID
 router.get('/:id', async (req, res) => {
-  try {
-    const user = await User.findById(req.params.id);
-    if (!user) return res.status(404).json({ msg: 'Usuario no encontrado' });
-    res.json(user);
-  } catch (err) {
-    console.error(err);
-    res.status(500).json({ msg: 'Error del servidor' });
-  }
+    try {
+        const user = await User.findById(req.params.id);
+        if (!user) return res.status(404).json({ msg: 'Usuario no encontrado' });
+        res.json(user);
+    } catch (err) {
+        console.error(err);
+        res.status(500).json({ msg: 'Error del servidor' });
+    }
+});
+router.put('/users/:id', async (req, res) => {
+    try {
+        const updatedUser = await User.findByIdAndUpdate(req.params.id, req.body, {
+            new: true,
+            runValidators: true,
+        });
+        if (!updatedUser) return res.status(404).json({ msg: 'Usuario no encontrado' });
+        res.json(updatedUser);
+    } catch (err) {
+        console.error(err);
+        res.status(500).json({ msg: 'Error al actualizar usuario' });
+    }
 });
 
-
+router.delete('/users/:id', async (req, res) => {
+    try {
+      const deletedUser = await User.findByIdAndDelete(req.params.id);
+      if (!deletedUser) return res.status(404).json({ msg: 'Usuario no encontrado' });
+      res.json({ msg: 'Usuario eliminado', deletedUser });
+    } catch (err) {
+      console.error(err);
+      res.status(500).json({ msg: 'Error al eliminar usuario' });
+    }
+  });
 module.exports = router;

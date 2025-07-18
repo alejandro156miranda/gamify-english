@@ -78,8 +78,8 @@ export default function LayoutUser({ children }) {
               <span className="link-text">Retos</span>
             </Link>
             <Link 
-              to="/profile" 
-              className={`nav-link ${location.pathname === '/profile' ? 'active' : ''}`}
+              to="/user_profile" 
+              className={`nav-link ${location.pathname === '/user_profile' ? 'active' : ''}`}
             >
               <span className="link-icon">👤</span>
               <span className="link-text">Perfil</span>

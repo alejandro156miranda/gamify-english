@@ -1,12 +1,40 @@
-// ✅ auth.js COMPLETO con insignias automáticas
+// auth.js
 const express = require('express');
 const router = express.Router();
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 const User = require('../models/User');
 
+// Definición de insignias con IDs
+const badgeThresholds = [
+    { id: 'primeros-pasos', name: 'Primeros Pasos', points: 10 },
+    { id: 'explorador', name: 'Explorador', points: 20 },
+    { id: 'aprendiz', name: 'Aprendiz', points: 30 },
+    { id: 'vocabulario', name: 'Maestro de Vocabulario', points: 50 },
+    { id: 'gramatica', name: 'Experto en Gramática', points: 80 },
+    { id: 'conversacion', name: 'Conversador Fluido', points: 120 },
+    { id: 'maestro', name: 'Maestro del Inglés', points: 180 },
+    { id: 'leyenda', name: 'Leyenda de Novatrail', points: 250 },
+    { id: 'heroe', name: 'Héroe del Conocimiento', points: 350 },
+    { id: 'gran-maestro', name: 'Gran Maestro', points: 500 }
+];
+
+// Mapa para convertir nombres a IDs
+const badgeNameToIdMap = {
+    'Primeros Pasos': 'primeros-pasos',
+    'Explorador': 'explorador',
+    'Aprendiz': 'aprendiz',
+    'Maestro de Vocabulario': 'vocabulario',
+    'Experto en Gramática': 'gramatica',
+    'Conversador Fluido': 'conversacion',
+    'Maestro del Inglés': 'maestro',
+    'Leyenda de Novatrail': 'leyenda',
+    'Héroe del Conocimiento': 'heroe',
+    'Gran Maestro': 'gran-maestro'
+};
+
 // Registro
-router.post('/register', async (req, res) => {
+router.post('/register', async(req, res) => {
     const { role, name, email, password, childId } = req.body;
     try {
         if (await User.findOne({ email })) {
@@ -29,8 +57,8 @@ router.post('/register', async (req, res) => {
     }
 });
 
-// Login
-router.post('/login', async (req, res) => {
+// Login con conversión de insignias
+router.post('/login', async(req, res) => {
     try {
         const { email, password } = req.body;
         const user = await User.findOne({ email });
@@ -44,9 +72,38 @@ router.post('/login', async (req, res) => {
             return res.status(401).json({ msg: 'Credenciales incorrectas' });
         }
 
+        // Convertir insignias de nombres a IDs
+        let needsSave = false;
+        const convertedBadges = user.badges.map(badgeName => {
+            return badgeNameToIdMap[badgeName] || badgeName;
+        });
+
+        // Filtrar IDs duplicados
+        const uniqueBadges = [...new Set(convertedBadges)];
+
+        // Verificar si hubo cambios
+        if (uniqueBadges.length !== user.badges.length ||
+            !uniqueBadges.every(b => user.badges.includes(b))) {
+            user.badges = uniqueBadges;
+            needsSave = true;
+        }
+
+        // Agregar insignias faltantes por puntos
+        for (const badge of badgeThresholds) {
+            if (user.points >= badge.points && !user.badges.includes(badge.id)) {
+                user.badges.push(badge.id);
+                needsSave = true;
+            }
+        }
+
+        // Eliminar duplicados nuevamente
+        if (needsSave) {
+            user.badges = [...new Set(user.badges)];
+            await user.save();
+        }
+
         const token = jwt.sign({ id: user._id }, process.env.JWT_SECRET, { expiresIn: '1d' });
 
-        // Devolver los datos completos del usuario
         res.json({
             token,
             user: {
@@ -68,7 +125,7 @@ router.post('/login', async (req, res) => {
 });
 
 // Editar perfil
-router.put('/update-profile', async (req, res) => {
+router.put('/update-profile', async(req, res) => {
     try {
         const authHeader = req.headers.authorization;
         const token = authHeader && authHeader.split(' ')[1];
@@ -101,44 +158,71 @@ router.put('/update-profile', async (req, res) => {
     }
 });
 
-// ✅ ACTUALIZAR PROGRESO CON INSIGNIAS
-router.put('/update-progress/:id', async (req, res) => {
+// Actualizar progreso con insignias por ID
+router.put('/update-progress/:id', async(req, res) => {
     const { points, type } = req.body;
-    console.log(`Recibido update de puntos: ${points}`);
     try {
         const user = await User.findById(req.params.id);
         if (!user) return res.status(404).json({ msg: 'Usuario no encontrado' });
 
         user.points += points;
         user.level = Math.floor(user.points / 100) + 1;
-        console.log(`📥 Progreso recibido: +${points} pts (${type}) para ${user.name}`);
 
         const newBadges = [];
-        if (user.points >= 20 && !user.badges.includes('Explorador')) {
-            newBadges.push('Explorador');
+
+        // Verificar cada insignia
+        for (const badge of badgeThresholds) {
+            if (user.points >= badge.points && !user.badges.includes(badge.id)) {
+                newBadges.push(badge.id);
+            }
         }
-        if (user.points >= 50 && !user.badges.includes('Aprendiz Destacado')) {
-            newBadges.push('Aprendiz Destacado');
-        }
-        if (user.points >= 100 && !user.badges.includes('Maestro del Inglés')) {
-            newBadges.push('Maestro del Inglés');
-        }
+
+        // Agregar nuevas insignias si existen
         if (newBadges.length > 0) {
-            user.badges.push(...newBadges);
+            user.badges = [...new Set([...user.badges, ...newBadges])];
+            console.log(`🎉 Nuevas insignias: ${newBadges.join(', ')}`);
         }
 
         await user.save();
-        res.json({ msg: 'Progreso actualizado', user });
+
+        res.json({
+            msg: 'Progreso actualizado',
+            user: {
+                id: user._id,
+                points: user.points,
+                level: user.level,
+                badges: user.badges
+            }
+        });
     } catch (err) {
         console.error(err);
         res.status(500).json({ msg: 'Error del servidor' });
     }
 });
 
+// Ruta para reparar insignias manualmente
+router.get('/fix-badges/:userId', async(req, res) => {
+    try {
+        const user = await User.findById(req.params.userId);
+        if (!user) return res.status(404).json({ msg: 'Usuario no encontrado' });
 
+        // Agregar todas las insignias que correspondan por puntos
+        const allBadges = badgeThresholds
+            .filter(badge => user.points >= badge.points)
+            .map(badge => badge.id);
+
+        user.badges = [...new Set(allBadges)];
+
+        await user.save();
+        res.json({ msg: 'Insignias reparadas', badges: user.badges });
+    } catch (err) {
+        console.error(err);
+        res.status(500).json({ msg: 'Error del servidor' });
+    }
+});
 
 // Obtener todos los usuarios
-router.get('/users', async (req, res) => {
+router.get('/users', async(req, res) => {
     try {
         const users = await User.find();
         res.json(users);
@@ -147,8 +231,9 @@ router.get('/users', async (req, res) => {
         res.status(500).json({ msg: 'Error al obtener usuarios' });
     }
 });
+
 // Obtener usuario por ID
-router.get('/:id', async (req, res) => {
+router.get('/:id', async(req, res) => {
     try {
         const user = await User.findById(req.params.id);
         if (!user) return res.status(404).json({ msg: 'Usuario no encontrado' });
@@ -158,7 +243,8 @@ router.get('/:id', async (req, res) => {
         res.status(500).json({ msg: 'Error del servidor' });
     }
 });
-router.put('/users/:id', async (req, res) => {
+
+router.put('/users/:id', async(req, res) => {
     try {
         const updatedUser = await User.findByIdAndUpdate(req.params.id, req.body, {
             new: true,
@@ -172,14 +258,15 @@ router.put('/users/:id', async (req, res) => {
     }
 });
 
-router.delete('/users/:id', async (req, res) => {
+router.delete('/users/:id', async(req, res) => {
     try {
-      const deletedUser = await User.findByIdAndDelete(req.params.id);
-      if (!deletedUser) return res.status(404).json({ msg: 'Usuario no encontrado' });
-      res.json({ msg: 'Usuario eliminado', deletedUser });
+        const deletedUser = await User.findByIdAndDelete(req.params.id);
+        if (!deletedUser) return res.status(404).json({ msg: 'Usuario no encontrado' });
+        res.json({ msg: 'Usuario eliminado', deletedUser });
     } catch (err) {
-      console.error(err);
-      res.status(500).json({ msg: 'Error al eliminar usuario' });
+        console.error(err);
+        res.status(500).json({ msg: 'Error al eliminar usuario' });
     }
-  });
+});
+
 module.exports = router;

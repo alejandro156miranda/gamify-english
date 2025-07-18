@@ -1,34 +1,197 @@
+/* src/components/UserBadges.css */
+
 .badges-container {
+    max-width: 1200px;
+    margin: 0 auto;
     padding: 20px;
-    text-align: center;
+    color: #333;
+}
+
+.badges-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 30px;
+    padding-bottom: 20px;
+    border-bottom: 2px solid #00f3ff;
+}
+
+.badges-header h1 {
+    font-size: 2.2rem;
+    color: #0f0c29;
+    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.points-display {
+    background: linear-gradient(135deg, #ffde00, #ff9f1c);
+    border-radius: 30px;
+    padding: 10px 25px;
+    display: flex;
+    align-items: center;
+    box-shadow: 0 4px 15px rgba(255, 159, 28, 0.3);
+}
+
+.points-label {
+    font-weight: 600;
+    margin-right: 10px;
+    color: #333;
+}
+
+.points-value {
+    font-size: 1.8rem;
+    font-weight: 800;
+    color: #fff;
+    text-shadow: 0 1px 3px rgba(0, 0, 0, 0.2);
 }
 
 .badges-grid {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 15px;
-    justify-content: center;
-    margin-top: 20px;
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+    gap: 25px;
 }
 
 .badge-card {
-    background: #f5f5f5;
-    padding: 15px;
-    border-radius: 12px;
-    width: 120px;
-    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
-    transition: transform 0.2s ease;
+    background: white;
+    border-radius: 15px;
+    overflow: hidden;
+    box-shadow: 0 5px 20px rgba(0, 0, 0, 0.1);
+    display: flex;
+    transition: all 0.3s ease;
+    position: relative;
+    border: 3px solid #e0e0e0;
+}
+
+.badge-card.unlocked {
+    border-color: var(--badge-color);
+    box-shadow: 0 5px 25px color-mix(in srgb, var(--badge-color) 30%, transparent);
+    transform: translateY(-5px);
+}
+
+.badge-card.locked {
+    opacity: 0.8;
+    filter: grayscale(60%);
 }
 
 .badge-card:hover {
-    transform: scale(1.05);
+    transform: translateY(-7px);
+    box-shadow: 0 8px 30px rgba(0, 0, 0, 0.15);
 }
 
 .badge-icon {
-    font-size: 2.5rem;
+    width: 100px;
+    background: linear-gradient(135deg, #f8f9fa, #e9ecef);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 3.5rem;
+    color: var(--badge-color);
+    border-right: 1px solid #eee;
+}
+
+.badge-content {
+    flex: 1;
+    padding: 20px;
+    position: relative;
 }
 
 .badge-name {
-    margin-top: 10px;
-    font-weight: bold;
+    font-size: 1.4rem;
+    margin-bottom: 8px;
+    color: #0f0c29;
+    font-weight: 700;
+}
+
+.badge-card.unlocked .badge-name {
+    color: var(--badge-color);
+}
+
+.badge-description {
+    color: #666;
+    font-size: 0.95rem;
+    margin-bottom: 20px;
+    min-height: 40px;
+}
+
+.progress-container {
+    margin: 20px 0;
+}
+
+.progress-bar {
+    width: 100%;
+    height: 12px;
+    background-color: #e0e0e0;
+    border-radius: 10px;
+    overflow: hidden;
+}
+
+.progress-fill {
+    height: 100%;
+    background: linear-gradient(90deg, #ddd, var(--badge-color));
+    width: var(--progress);
+    border-radius: 10px;
+    transition: width 1s ease;
+}
+
+.badge-card.unlocked .progress-fill {
+    background: linear-gradient(90deg, var(--badge-color), color-mix(in srgb, var(--badge-color) 70%, black));
+}
+
+.progress-text {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 5px;
+    font-size: 0.9rem;
+    color: #777;
+}
+
+.unlocked-text {
+    color: var(--badge-color);
+    font-weight: 700;
+}
+
+.points-requirement {
+    text-align: center;
+    font-size: 0.9rem;
+    margin-top: 15px;
+    padding: 8px;
+    background-color: #f8f9fa;
+    border-radius: 8px;
+    border-left: 3px solid var(--badge-color);
+}
+
+.lock-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(255, 255, 255, 0.8);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 3rem;
+    color: #999;
+}
+
+
+/* Responsive */
+
+@media (max-width: 768px) {
+    .badges-grid {
+        grid-template-columns: 1fr;
+    }
+    .badges-header {
+        flex-direction: column;
+        text-align: center;
+        gap: 15px;
+    }
+    .badge-card {
+        flex-direction: column;
+    }
+    .badge-icon {
+        width: 100%;
+        height: 100px;
+        border-right: none;
+        border-bottom: 1px solid #eee;
+    }
 }

@@ -8,10 +8,25 @@ const UserSchema = new mongoose.Schema({
     childId: { type: mongoose.Schema.Types.ObjectId, ref: 'User', default: null },
     points: { type: Number, default: 0 },
     level: { type: Number, default: 1 },
-    badges: [{ type: String }], // ← Insignias como array de strings
+    badges: {
+        type: [String],
+        enum: [
+            'primeros-pasos',
+            'explorador',
+            'aprendiz',
+            'vocabulario',
+            'gramatica',
+            'conversacion',
+            'maestro',
+            'leyenda',
+            'heroe',
+            'gran-maestro'
+        ],
+        default: []
+    },
     avatar: { type: String, default: null },
     createdAt: { type: Date, default: Date.now },
-    completedChallenges: { type: [String], default: [] } // IDs de retos completados
+    completedChallenges: { type: [String], default: [] }
 });
 
 module.exports = mongoose.model('User', UserSchema);

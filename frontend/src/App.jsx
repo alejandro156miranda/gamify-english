@@ -19,6 +19,7 @@ import UserProfile from './pages/UserProfile';
 import AdminWeeklyActs from './pages/AdminWeeklyActs';
 import AdminPanel from './pages/AdminPanel';
 import AdminUsers from './pages/AdminUsers'; 
+import AboutUs from './pages/AboutUs'; // Importa el nuevo componente
 
 export default function App() {
 
@@ -50,9 +51,14 @@ export default function App() {
           <Route path="/admin" element={<AdminPanel />} />
           <Route path="/admin/users" element={<AdminUsers />} />
           <Route path="/admin/weekly-challenges" element={<AdminWeeklyActs />} />
-          {/*<Route path="/admin/users" element={<AdminUsers />} />*/}
-          
         </Route>
+
+        {/* Nueva ruta para Sobre Nosotros */}
+        <Route path="/nosotros" element={
+          <LayoutUser>
+            <AboutUs />
+          </LayoutUser>
+        } />
       </Routes>
     </BrowserRouter>
   );

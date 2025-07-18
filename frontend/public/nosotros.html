@@ -1,0 +1,640 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sobre Nosotros - English Gamify</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+         :root {
+            --neon-blue: #0ff0fc;
+            --neon-pink: #ff00ff;
+            --neon-green: #39ff14;
+            --neon-purple: #bc13fe;
+            --dark-bg: #0a0a18;
+            --card-bg: rgba(20, 20, 40, 0.8);
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Rajdhani', 'Segoe UI', sans-serif;
+        }
+        
+        @import url('https://fonts.googleapis.com/css2?family=Rajdhani:wght@300;400;500;600;700&display=swap');
+        body {
+            background-color: var(--dark-bg);
+            background-image: radial-gradient(circle at 10% 20%, rgba(11, 13, 40, 0.8) 0%, transparent 40%), radial-gradient(circle at 90% 80%, rgba(59, 15, 80, 0.6) 0%, transparent 40%);
+            color: #fff;
+            min-height: 100vh;
+            overflow-x: hidden;
+            position: relative;
+        }
+        
+        body::before {
+            content: "";
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: radial-gradient(circle at 20% 30%, rgba(0, 255, 252, 0.05) 0%, transparent 20%), radial-gradient(circle at 80% 70%, rgba(255, 0, 255, 0.05) 0%, transparent 20%);
+            z-index: -1;
+            pointer-events: none;
+        }
+        /* Animación de partículas */
+        
+        .particles {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+            overflow: hidden;
+        }
+        
+        .particle {
+            position: absolute;
+            background: var(--neon-blue);
+            border-radius: 50%;
+            opacity: 0.7;
+            animation: float 15s infinite linear;
+        }
+        
+        @keyframes float {
+            0% {
+                transform: translateY(0) translateX(0);
+            }
+            100% {
+                transform: translateY(-100vh) translateX(100px);
+            }
+        }
+        /* Estilos del header */
+        
+        .hero-header {
+            text-align: center;
+            padding: 80px 20px 60px;
+            position: relative;
+            background: linear-gradient(to bottom, rgba(10, 10, 24, 0.9), transparent);
+            z-index: 2;
+        }
+        
+        .neon-title {
+            font-size: 4.5rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            margin-bottom: 20px;
+            letter-spacing: 4px;
+            text-shadow: 0 0 10px var(--neon-blue), 0 0 20px var(--neon-blue), 0 0 40px var(--neon-blue);
+            animation: pulse 2s infinite alternate;
+        }
+        
+        @keyframes pulse {
+            0% {
+                text-shadow: 0 0 10px var(--neon-blue), 0 0 20px var(--neon-blue), 0 0 40px var(--neon-blue);
+            }
+            100% {
+                text-shadow: 0 0 15px var(--neon-blue), 0 0 30px var(--neon-blue), 0 0 60px var(--neon-blue);
+            }
+        }
+        
+        .subtitle {
+            font-size: 1.5rem;
+            max-width: 800px;
+            margin: 0 auto 40px;
+            color: #ccc;
+            line-height: 1.6;
+        }
+        
+        .highlight {
+            color: var(--neon-green);
+            font-weight: 600;
+        }
+        /* Sección de tarjetas de programas */
+        
+        .programs-section {
+            max-width: 1300px;
+            margin: 0 auto 80px;
+            padding: 0 20px;
+        }
+        
+        .section-title {
+            text-align: center;
+            font-size: 2.5rem;
+            margin-bottom: 60px;
+            position: relative;
+            display: inline-block;
+            left: 50%;
+            transform: translateX(-50%);
+        }
+        
+        .section-title::after {
+            content: "";
+            position: absolute;
+            bottom: -15px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 100px;
+            height: 4px;
+            background: var(--neon-pink);
+            border-radius: 2px;
+            box-shadow: 0 0 10px var(--neon-pink);
+        }
+        
+        .cards-container {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 40px;
+        }
+        
+        .program-card {
+            background: var(--card-bg);
+            border-radius: 15px;
+            width: 350px;
+            padding: 30px;
+            position: relative;
+            overflow: hidden;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        
+        .program-card::before {
+            content: "";
+            position: absolute;
+            top: -2px;
+            left: -2px;
+            right: -2px;
+            bottom: -2px;
+            background: linear-gradient(45deg, var(--neon-blue), var(--neon-pink), var(--neon-purple));
+            z-index: -1;
+            border-radius: 17px;
+            animation: borderAnimation 3s linear infinite;
+        }
+        
+        .program-card::after {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: inherit;
+            border-radius: 15px;
+            z-index: -1;
+        }
+        
+        @keyframes borderAnimation {
+            0% {
+                filter: hue-rotate(0deg);
+            }
+            100% {
+                filter: hue-rotate(360deg);
+            }
+        }
+        
+        .program-card:hover {
+            transform: translateY(-10px) scale(1.03);
+            box-shadow: 0 15px 40px rgba(188, 19, 254, 0.3);
+        }
+        
+        .card-header {
+            display: flex;
+            align-items: center;
+            margin-bottom: 25px;
+        }
+        
+        .card-logo {
+            width: 60px;
+            height: 60px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-right: 20px;
+            font-size: 24px;
+            color: var(--neon-green);
+        }
+        
+        .card-title {
+            font-size: 1.8rem;
+            font-weight: 700;
+        }
+        
+        .card-content {
+            margin-bottom: 25px;
+            line-height: 1.7;
+            color: #ddd;
+        }
+        
+        .benefits-list {
+            margin: 20px 0;
+            padding-left: 20px;
+        }
+        
+        .benefits-list li {
+            margin-bottom: 12px;
+            position: relative;
+            padding-left: 25px;
+        }
+        
+        .benefits-list li::before {
+            content: "▹";
+            position: absolute;
+            left: 0;
+            color: var(--neon-green);
+            font-size: 1.2rem;
+        }
+        
+        .visit-button {
+            display: block;
+            width: 100%;
+            padding: 15px;
+            text-align: center;
+            background: linear-gradient(45deg, var(--neon-purple), var(--neon-pink));
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            cursor: pointer;
+            position: relative;
+            overflow: hidden;
+            z-index: 1;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            text-decoration: none;
+            letter-spacing: 1px;
+        }
+        
+        .visit-button::before {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+            transition: 0.5s;
+            z-index: -1;
+        }
+        
+        .visit-button:hover::before {
+            left: 100%;
+        }
+        
+        .visit-button:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 5px 15px rgba(188, 19, 254, 0.4);
+        }
+        /* Sección de nuestra misión */
+        
+        .mission-section {
+            max-width: 900px;
+            margin: 0 auto 80px;
+            padding: 0 20px;
+            text-align: center;
+        }
+        
+        .mission-statement {
+            background: var(--card-bg);
+            border-radius: 15px;
+            padding: 40px;
+            position: relative;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+        }
+        
+        .mission-title {
+            font-size: 2.2rem;
+            margin-bottom: 30px;
+            color: var(--neon-blue);
+        }
+        
+        .mission-text {
+            font-size: 1.2rem;
+            line-height: 1.8;
+            margin-bottom: 30px;
+        }
+        
+        .mission-highlight {
+            display: inline-block;
+            font-size: 1.3rem;
+            font-weight: 600;
+            padding: 10px 20px;
+            background: rgba(57, 255, 20, 0.1);
+            border-radius: 8px;
+            color: var(--neon-green);
+            margin: 20px 0;
+            border: 1px solid var(--neon-green);
+            box-shadow: 0 0 15px rgba(57, 255, 20, 0.2);
+        }
+        /* Footer */
+        
+        .gamer-footer {
+            background: rgba(10, 10, 24, 0.9);
+            padding: 60px 20px 30px;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+            position: relative;
+        }
+        
+        .footer-content {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        
+        .footer-links {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 30px;
+            margin-bottom: 40px;
+        }
+        
+        .footer-links a {
+            color: #ddd;
+            text-decoration: none;
+            font-size: 1.1rem;
+            position: relative;
+            padding: 5px 10px;
+            transition: color 0.3s ease;
+        }
+        
+        .footer-links a::after {
+            content: "";
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 0;
+            height: 2px;
+            background: var(--neon-blue);
+            transition: width 0.3s ease;
+        }
+        
+        .footer-links a:hover {
+            color: var(--neon-blue);
+        }
+        
+        .footer-links a:hover::after {
+            width: 100%;
+        }
+        
+        .social-icons {
+            display: flex;
+            gap: 20px;
+            margin-bottom: 40px;
+        }
+        
+        .social-icon {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.1);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #ddd;
+            font-size: 1.5rem;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            position: relative;
+        }
+        /* Texto oculto para accesibilidad */
+        
+        .sr-only {
+            position: absolute;
+            width: 1px;
+            height: 1px;
+            padding: 0;
+            margin: -1px;
+            overflow: hidden;
+            clip: rect(0, 0, 0, 0);
+            white-space: nowrap;
+            border: 0;
+        }
+        
+        .social-icon:hover {
+            background: var(--neon-pink);
+            color: white;
+            transform: translateY(-5px);
+            box-shadow: 0 5px 15px rgba(255, 0, 255, 0.4);
+        }
+        
+        .copyright {
+            color: #aaa;
+            font-size: 0.9rem;
+            text-align: center;
+            margin-top: 20px;
+        }
+        /* Responsive */
+        
+        @media (max-width: 768px) {
+            .neon-title {
+                font-size: 3rem;
+            }
+            .section-title {
+                font-size: 2rem;
+            }
+            .cards-container {
+                flex-direction: column;
+                align-items: center;
+            }
+            .program-card {
+                width: 100%;
+                max-width: 500px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <!-- Partículas de fondo -->
+    <div class="particles" id="particles"></div>
+
+    <!-- Header Hero -->
+    <header class="hero-header">
+        <h1 class="neon-title">Sobre Nosotros</h1>
+        <p class="subtitle">En <span class="highlight">English Gamify</span> transformamos el aprendizaje del inglés en una aventura épica donde cada punto ganado acerca a los estudiantes a oportunidades educativas reales. Conectamos el esfuerzo con resultados tangibles
+            a través de nuestros programas asociados.</p>
+    </header>
+
+    <!-- Sección de programas asociados -->
+    <section class="programs-section">
+        <h2 class="section-title">Nuestros Programas Asociados</h2>
+        <div class="cards-container">
+            <!-- Tarjeta WTL Programs -->
+            <div class="program-card">
+                <div class="card-header">
+                    <div class="card-logo">
+                        <i class="fas fa-globe-americas"></i>
+                    </div>
+                    <h3 class="card-title">WTL Programs</h3>
+                </div>
+                <p class="card-content">Programas de inmersión internacional que combinan aprendizaje del inglés con experiencias culturales únicas y desarrollo de liderazgo.</p>
+                <ul class="benefits-list">
+                    <li>Campamentos de verano en el extranjero</li>
+                    <li>Programas de intercambio cultural</li>
+                    <li>Talleres de liderazgo juvenil</li>
+                    <li>Experiencias educativas transformadoras</li>
+                </ul>
+                <p class="card-content"><strong>Beneficio especial:</strong> 500 puntos = 15% de descuento en cualquier programa internacional</p>
+                <!-- Corrección de seguridad: rel="noopener noreferrer" -->
+                <a href="https://www.wtlprograms.com/" target="_blank" rel="noopener noreferrer" class="visit-button">
+                    <i class="fas fa-external-link-alt"></i> Visitar Sitio Web
+                </a>
+            </div>
+
+            <!-- Tarjeta Novatrail Careers -->
+            <div class="program-card">
+                <div class="card-header">
+                    <div class="card-logo">
+                        <i class="fas fa-graduation-cap"></i>
+                    </div>
+                    <h3 class="card-title">Novatrail Careers</h3>
+                </div>
+                <p class="card-content">Orientación vocacional y preparación para carreras internacionales con énfasis en dominio del inglés profesional.</p>
+                <ul class="benefits-list">
+                    <li>Asesoría para universidades en el extranjero</li>
+                    <li>Preparación para exámenes TOEFL/IELTS</li>
+                    <li>Programas de pasantías internacionales</li>
+                    <li>Desarrollo de habilidades profesionales</li>
+                </ul>
+                <p class="card-content"><strong>Beneficio especial:</strong> 700 puntos = 20% de descuento en programas de preparación</p>
+                <!-- Corrección de seguridad: rel="noopener noreferrer" -->
+                <a href="https://novatrailcareers.com/" target="_blank" rel="noopener noreferrer" class="visit-button">
+                    <i class="fas fa-external-link-alt"></i> Visitar Sitio Web
+                </a>
+            </div>
+
+            <!-- Tarjeta InTraining Programs -->
+            <div class="program-card">
+                <div class="card-header">
+                    <div class="card-logo">
+                        <i class="fas fa-laptop-code"></i>
+                    </div>
+                    <h3 class="card-title">InTraining Programs</h3>
+                </div>
+                <p class="card-content">Programas de capacitación técnica con certificaciones internacionales que requieren dominio del inglés técnico.</p>
+                <ul class="benefits-list">
+                    <li>Cursos de inglés para negocios y tecnología</li>
+                    <li>Certificaciones profesionales internacionales</li>
+                    <li>Programas de mentoría con expertos</li>
+                    <li>Preparación para el mercado laboral global</li>
+                </ul>
+                <p class="card-content"><strong>Beneficio especial:</strong> 400 puntos = 10% de descuento en certificaciones</p>
+                <!-- Corrección de seguridad: rel="noopener noreferrer" -->
+                <a href="https://www.intrainingprograms.com/" target="_blank" rel="noopener noreferrer" class="visit-button">
+                    <i class="fas fa-external-link-alt"></i> Visitar Sitio Web
+                </a>
+            </div>
+        </div>
+    </section>
+
+    <!-- Sección de nuestra misión -->
+    <section class="mission-section">
+        <div class="mission-statement">
+            <h3 class="mission-title">Nuestra Misión</h3>
+            <p class="mission-text">En English Gamify creemos que aprender inglés debe ser tan emocionante como jugar tu videojuego favorito. Hemos creado un ecosistema donde cada actividad completada, cada punto ganado y cada insignia desbloqueada representa un paso hacia oportunidades
+                educativas reales.</p>
+            <p class="mission-text">Nuestra plataforma gamificada no es solo un método de aprendizaje, es un puente hacia programas educativos de calidad que pueden transformar el futuro de nuestros estudiantes.</p>
+            <div class="mission-highlight">
+                <i class="fas fa-gamepad"></i> APRENDE - JUEGA - CRECE <i class="fas fa-rocket"></i>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="gamer-footer">
+        <div class="footer-content">
+            <div class="footer-links">
+                <a href="/about">Sobre Nosotros</a>
+                <a href="/terms">Términos y Condiciones</a>
+                <a href="/privacy">Política de Privacidad</a>
+                <a href="/contact">Contacto</a>
+            </div>
+            <div class="social-icons">
+                <!-- Enlaces sociales con accesibilidad mejorada -->
+                <a href="#" class="social-icon" aria-label="Facebook">
+                    <i class="fab fa-facebook-f"></i>
+                    <span class="sr-only">Facebook</span>
+                </a>
+                <a href="#" class="social-icon" aria-label="Twitter">
+                    <i class="fab fa-twitter"></i>
+                    <span class="sr-only">Twitter</span>
+                </a>
+                <a href="#" class="social-icon" aria-label="Instagram">
+                    <i class="fab fa-instagram"></i>
+                    <span class="sr-only">Instagram</span>
+                </a>
+                <a href="#" class="social-icon" aria-label="YouTube">
+                    <i class="fab fa-youtube"></i>
+                    <span class="sr-only">YouTube</span>
+                </a>
+            </div>
+            <p class="copyright">© 2023 English Gamify Platform. Todos los derechos reservados.</p>
+        </div>
+    </footer>
+
+    <script>
+        // Crear partículas para el fondo
+        document.addEventListener('DOMContentLoaded', function() {
+            const particlesContainer = document.getElementById('particles');
+            const particleCount = 50;
+
+            for (let i = 0; i < particleCount; i++) {
+                const particle = document.createElement('div');
+                particle.classList.add('particle');
+
+                // Tamaño y posición aleatorios
+                const size = Math.random() * 5 + 1;
+                particle.style.width = `${size}px`;
+                particle.style.height = `${size}px`;
+
+                // Posición inicial aleatoria
+                const startX = Math.random() * 100;
+                const startY = Math.random() * 100 + 100;
+                particle.style.left = `${startX}%`;
+                particle.style.top = `${startY}%`;
+
+                // Color aleatorio
+                const colors = ['#0ff0fc', '#ff00ff', '#39ff14', '#bc13fe'];
+                const color = colors[Math.floor(Math.random() * colors.length)];
+                particle.style.backgroundColor = color;
+
+                // Duración de animación aleatoria
+                const duration = Math.random() * 20 + 10;
+                particle.style.animationDuration = `${duration}s`;
+
+                // Retraso aleatorio
+                const delay = Math.random() * 5;
+                particle.style.animationDelay = `${delay}s`;
+
+                particlesContainer.appendChild(particle);
+            }
+
+            // Efecto de escritura en el título
+            const title = document.querySelector('.neon-title');
+            const originalText = title.textContent;
+            title.textContent = '';
+
+            let i = 0;
+            const typeWriter = setInterval(() => {
+                if (i < originalText.length) {
+                    title.textContent += originalText.charAt(i);
+                    i++;
+                } else {
+                    clearInterval(typeWriter);
+                }
+            }, 100);
+        });
+    </script>
+</body>
+
+</html>

@@ -1,5 +1,5 @@
 // src/pages/Activities.jsx
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect, useRef, useCallback } from 'react';
 import { updateUserProgress } from '../services/challengeService';
 import cocodriloFeliz from '../assets/cocodrilo_feliz.gif';
 import cocodriloTriste from '../assets/cocodrilo_triste.gif';
@@ -168,20 +168,33 @@ export default function Activities() {
     points: 0,
     time: 0
   });
+  const [practiceMode, setPracticeMode] = useState(false); // Estado añadido
 
-  const [totalPoints, setTotalPoints] = useState(() => {
-    const u = JSON.parse(localStorage.getItem('user'));
-    return u?.points || 0;
+  // Estado del usuario con progreso incluido
+  const [user, setUser] = useState(() => {
+    const storedUser = JSON.parse(localStorage.getItem('user'));
+    
+    // Inicializar progreso si es un usuario nuevo
+    if (storedUser) {
+      return {
+        ...storedUser,
+        progress: storedUser.progress || {
+          quizzes: {},
+          match: false
+        },
+        points: storedUser.points || 0,
+        level: storedUser.level || 1
+      };
+    }
+    
+    return { 
+      points: 0, 
+      level: 1, 
+      progress: { quizzes: {}, match: false } 
+    };
   });
-  const [level, setLevel] = useState(() => {
-    const u = JSON.parse(localStorage.getItem('user'));
-    return u?.level || 1;
-  });
-  const [practiceMode, setPracticeMode] = useState(false);
 
-  // ────────────────────────────────
-  // 3) Match Game mejorado
-  // ────────────────────────────────
+  // 3) Match Game
   const pairs = [
     { en: 'SUN', es: 'SOL', image: '☀️' },
     { en: 'MOON', es: 'LUNA', image: '🌙' },
@@ -209,12 +222,9 @@ export default function Activities() {
   // 4) Efectos
   // ────────────────────────────────
   useEffect(() => {
-    const u = JSON.parse(localStorage.getItem('user'));
-    if (u) { 
-      setTotalPoints(u.points); 
-      setLevel(u.level); 
-    }
-  }, []);
+    // Actualizar localStorage cuando el usuario cambia
+    localStorage.setItem('user', JSON.stringify(user));
+  }, [user]);
 
   useEffect(() => {
     if (view === 'match') {
@@ -240,24 +250,34 @@ export default function Activities() {
   }, [view]);
 
   // Función para reiniciar el juego de emparejamiento
-  const resetMatchGame = () => {
-    setLeftWords(pairs.map(p => ({...p, side: 'left'})).sort(() => Math.random() - 0.5));
-    setRightWords(pairs.map(p => ({...p, side: 'right'})).sort(() => Math.random() - 0.5));
+  const resetMatchGame = useCallback(() => {
+    const shuffledLeft = [...pairs]
+      .map(p => ({...p, side: 'left'}))
+      .sort(() => Math.random() - 0.5);
+      
+    const shuffledRight = [...pairs]
+      .map(p => ({...p, side: 'right'}))
+      .sort(() => Math.random() - 0.5);
+      
+    setLeftWords(shuffledLeft);
+    setRightWords(shuffledRight);
     setSelLeft(null); 
     setSelRight(null); 
     setMatched([]); 
     setMatchMsg('');
     setMatchTime(0);
-  };
+  }, [pairs]);
 
   // ────────────────────────────────
   // 5) Funciones de Quiz
   // ────────────────────────────────
   const startQuiz = quiz => {
+    // Verificar si está bloqueado
     const idx = quizzes.findIndex(q => q.id === quiz.id);
-    if (idx > 0 && localStorage.getItem(quizzes[idx - 1].id) !== 'done') {
+    if (idx > 0 && !user.progress.quizzes[quizzes[idx - 1].id]) {
       return setShowLockModal(true);
     }
+    
     setCurrentQuiz(quiz);
     setQIndex(0);
     setQuizScore(0);
@@ -281,14 +301,27 @@ export default function Activities() {
     if (qIndex + 1 < currentQuiz.questions.length) {
       setQIndex(i => i + 1);
     } else {
-      localStorage.setItem(currentQuiz.id, 'done');
+      // Actualizar progreso del usuario
+      const updatedProgress = {
+        ...user.progress,
+        quizzes: {
+          ...user.progress.quizzes,
+          [currentQuiz.id]: true
+        }
+      };
 
       const pts = quizScore;
-      const updatedTotal = totalPoints + pts;
-      const updatedLevel = Math.floor(updatedTotal / 100) + 1;
+      const updatedPoints = user.points + pts;
+      const updatedLevel = Math.floor(updatedPoints / 100) + 1;
 
-      setTotalPoints(updatedTotal);
-      setLevel(updatedLevel);
+      const updatedUser = {
+        ...user,
+        points: updatedPoints,
+        level: updatedLevel,
+        progress: updatedProgress
+      };
+
+      setUser(updatedUser);
       
       // Calcular respuestas correctas
       const correctAnswers = Math.floor(quizScore / 5);
@@ -301,15 +334,17 @@ export default function Activities() {
       });
       setShowQuizModal(true);
 
-      const u = JSON.parse(localStorage.getItem('user'));
-      if (u?.id && pts > 0) {
-        updateUserProgress(u.id, pts, 'quiz')
+      // Actualizar en el servidor si el usuario está autenticado
+      if (user?.id && pts > 0) {
+        updateUserProgress(user.id, pts, 'quiz')
           .then(res => {
-            const oldUser = JSON.parse(localStorage.getItem('user'));
-            const updatedUser = { ...oldUser, ...res.user };
-            localStorage.setItem('user', JSON.stringify(updatedUser));
-            setTotalPoints(updatedUser.points);
-            setLevel(updatedUser.level);
+            const updatedUserFromServer = { 
+              ...updatedUser, 
+              badges: res.user.badges, // FIX: Actualizar insignias
+              points: res.user.points,
+              level: res.user.level
+            };
+            setUser(updatedUserFromServer);
           })
           .catch(console.error);
       }
@@ -325,7 +360,7 @@ export default function Activities() {
   // 6) Funciones de Match mejoradas
   // ────────────────────────────────
   const startMatch = () => {
-    const alreadyDone = localStorage.getItem('done-match') === 'true';
+    const alreadyDone = user.progress.match;
     setPracticeMode(alreadyDone);
     setView('match');
   };
@@ -343,18 +378,27 @@ export default function Activities() {
       if (!practiceMode) {
         setMatchMsg('✅ ¡Bien! +10 pts');
 
-        const storedUser = JSON.parse(localStorage.getItem('user'));
-        const userId = storedUser?.id;
+        const updatedPoints = user.points + 10;
+        const updatedLevel = Math.floor(updatedPoints / 100) + 1;
+        
+        const updatedUser = {
+          ...user,
+          points: updatedPoints,
+          level: updatedLevel
+        };
 
-        if (userId) {
-          updateUserProgress(userId, 10, 'match')
+        setUser(updatedUser);
+
+        if (user?.id) {
+          updateUserProgress(user.id, 10, 'match')
             .then(res => {
-              const updatedUser = res.user;
-              const oldUser = JSON.parse(localStorage.getItem('user'));
-              const mergedUser = { ...oldUser, ...updatedUser };
-              localStorage.setItem('user', JSON.stringify(mergedUser));
-              setTotalPoints(mergedUser.points);
-              setLevel(mergedUser.level);
+              const updatedUserFromServer = { 
+                ...updatedUser, 
+                badges: res.user.badges, // FIX: Actualizar insignias
+                points: res.user.points,
+                level: res.user.level
+              };
+              setUser(updatedUserFromServer);
             })
             .catch(err => console.error('❌ Error al subir puntos match:', err));
         }
@@ -364,9 +408,19 @@ export default function Activities() {
 
       if (updatedMatched.length === pairs.length) {
         if (!practiceMode) {
-          localStorage.setItem('done-match', 'true');
+          // Marcar match como completado
+          const updatedUser = {
+            ...user,
+            progress: {
+              ...user.progress,
+              match: true
+            }
+          };
+          
+          setUser(updatedUser);
+          
           const timeTaken = Math.floor((Date.now() - matchStartTimeRef.current) / 1000);
-          const timeBonus = Math.max(0, 300 - timeTaken); // Bonus por tiempo
+          const timeBonus = Math.max(0, 300 - timeTaken);
           const totalPoints = (pairs.length * 10) + timeBonus;
           
           setMatchResult({
@@ -428,7 +482,6 @@ export default function Activities() {
         <div className="modal-box result-modal">
           <img src={estrellas} alt="Estrellas" className="stars-bg" />
           
-        
           <h2>¡Quiz Completado!</h2>
           
           <div className="result-details">
@@ -503,8 +556,8 @@ export default function Activities() {
           <h2 className="title neon">{currentQuiz.title}</h2>
           <div className="status">
             <span>Pregunta {qIndex + 1} de {currentQuiz.questions.length}</span>
-            <span>Nivel {level}</span>
-            <span>{totalPoints} pts</span>
+            <span>Nivel {user.level}</span>
+            <span>{user.points} pts</span>
           </div>
         </div>
         
@@ -565,8 +618,8 @@ export default function Activities() {
           <h2 className="title neon">Empareja las Palabras</h2>
           <div className="match-status">
             <span>Tiempo: {matchTime}s</span>
-            <span>Nivel {level}</span>
-            <span>{totalPoints} pts</span>
+            <span>Nivel {user.level}</span>
+            <span>{user.points} pts</span>
           </div>
           {practiceMode && (
             <div className="practice-mode-badge">Modo Práctica</div>
@@ -682,8 +735,8 @@ export default function Activities() {
       <div className="header">
         <h1 className="title neon">ACTIVIDADES DE APRENDIZAJE</h1>
         <div className="level-display">
-          <span>Nivel {level}</span>
-          <div className="points-badge">{totalPoints} pts</div>
+          <span>Nivel {user.level}</span>
+          <div className="points-badge">{user.points} pts</div>
         </div>
       </div>
       
@@ -697,8 +750,8 @@ export default function Activities() {
           <h2>Quizzes de Vocabulario</h2>
           <div className="quizzes-container">
             {quizzes.map((q, idx) => {
-              const locked = idx > 0 && localStorage.getItem(quizzes[idx - 1].id) !== 'done';
-              const completed = localStorage.getItem(q.id) === 'done';
+              const locked = idx > 0 && !user.progress.quizzes[quizzes[idx - 1].id];
+              const completed = !!user.progress.quizzes[q.id];
               
               return (
                 <div 
@@ -727,10 +780,10 @@ export default function Activities() {
         <div className="games-section">
           <h2>Juegos Interactivos</h2>
           <div 
-            className={`game-card ${localStorage.getItem('done-match') === 'true' ? 'completed' : ''}`}
+            className={`game-card ${user.progress.match ? 'completed' : ''}`}
             onClick={startMatch}
           >
-            {localStorage.getItem('done-match') === 'true' && (
+            {user.progress.match && (
               <div className="completed-badge">✓ Completado</div>
             )}
             

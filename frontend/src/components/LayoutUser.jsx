@@ -111,7 +111,8 @@ export default function LayoutUser({ children }) {
       <footer className="gamer-footer">
         <div className="footer-content">
           <div className="footer-links">
-            <Link to="/about">Sobre Nosotros</Link>
+        
+            <Link to="/nosotros">Sobre Nosotros</Link>
             <Link to="/terms">Términos y Condiciones</Link>
             <Link to="/privacy">Política de Privacidad</Link>
             <Link to="/contact">Contacto</Link>

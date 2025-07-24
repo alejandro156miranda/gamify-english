@@ -53,6 +53,14 @@ export default function LayoutUserProfile() {
             <span className="link-text">Insignias</span>
           </Link>
           <Link 
+            to="/raffle" 
+            className={`nav-link ${isActive('/raffle') ? 'active' : ''}`}
+            onClick={() => setMenuOpen(false)}
+          >
+            <span className="link-icon">🎡</span>
+            <span className="link-text">Rifa</span>
+          </Link>
+          <Link 
             to="/user_profile" 
             className={`nav-link ${isActive('/user_profile') ? 'active' : ''}`}
             onClick={() => setMenuOpen(false)}

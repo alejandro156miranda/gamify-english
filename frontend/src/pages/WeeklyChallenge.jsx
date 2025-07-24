@@ -13,7 +13,7 @@ export default function WeeklyChallenge() {
     getWeeklyChallenge()
       .then(data => {
         console.log('📦 Datos del reto semanal:', data);
-        setChallenge(data[0]); // importante para mantener tu estructura actual
+        setChallenge(data[0]); // importante para mantener la estructura 
         if (user?.completedChallenges?.includes(data[0]._id)) {
           setIsCompleted(true); // Marcar como completado si el usuario ya lo hizo
         }

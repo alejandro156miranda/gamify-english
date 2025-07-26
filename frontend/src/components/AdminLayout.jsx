@@ -6,12 +6,12 @@ export default function AdminPanel() {
   return (
     <div className={styles['admin-container']}>
       <header className={styles['admin-header']}>
-        <h2>Panel de Administración</h2>
+        <h2>Panel de Administración Gamify English</h2>
       </header>
       <nav className={styles['admin-nav']}>
         <ul>
           <li> <Link to="/admin/users">Usuarios</Link></li>
-          <li><Link to="/admin/weekly-challenges">Actividades</Link></li>
+          <li><Link to="/admin/activities">Actividades</Link></li>
           <li> <Link to="/admin/weekly-challenges">Retos Semanales</Link></li>
           <li><Link to="/admin/weekly-challenges">Configuracion</Link></li>
         </ul>

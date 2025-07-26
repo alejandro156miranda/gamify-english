@@ -19,16 +19,16 @@ export async function login(data) {
 
     // Verificar si hay insignias faltantes
     const badgeThresholds = [
-        { id: 'primeros-pasos', points: 10 },
-        { id: 'explorador', points: 20 },
-        { id: 'aprendiz', points: 30 },
-        { id: 'vocabulario', points: 50 },
-        { id: 'gramatica', points: 80 },
-        { id: 'conversacion', points: 120 },
-        { id: 'maestro', points: 180 },
-        { id: 'leyenda', points: 250 },
-        { id: 'heroe', points: 350 },
-        { id: 'gran-maestro', points: 500 }
+        { id: 'primeros-pasos', points: 30 },
+        { id: 'explorador', points: 100 },
+        { id: 'aprendiz', points: 300 },
+        { id: 'vocabulario', points: 500 },
+        { id: 'gramatica', points: 700 },
+        { id: 'conversacion', points: 1000 },
+        { id: 'maestro', points: 1500 },
+        { id: 'leyenda', points: 2000 },        
+        { id: 'heroe', points: 3500 },
+        { id: 'gran-maestro', points: 5000 }
     ];
 
     const user = result.user;

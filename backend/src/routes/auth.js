@@ -124,7 +124,6 @@ router.post('/login', async(req, res) => {
     }
 });
 
-// Editar perfil
 router.put('/update-profile', async(req, res) => {
     try {
         const authHeader = req.headers.authorization;
@@ -157,6 +156,32 @@ router.put('/update-profile', async(req, res) => {
         res.status(500).json({ msg: 'Error al actualizar perfil' });
     }
 });
+
+// Actualizar usuario por ID (Admin)
+router.put('/users/:id', async (req, res) => {
+    try {
+      const { name, email, role } = req.body;
+      const user = await User.findById(req.params.id);
+      if (!user) return res.status(404).json({ msg: 'Usuario no encontrado' });
+  
+      user.name = name ?? user.name;
+      user.email = email ?? user.email;
+      user.role = role ?? user.role;
+  
+      await user.save();
+  
+      res.json({
+        id: user._id,
+        name: user.name,
+        email: user.email,
+        role: user.role,
+      });
+    } catch (err) {
+      console.error('❌ Error al actualizar usuario:', err);
+      res.status(500).json({ msg: 'Error al actualizar usuario' });
+    }
+  });
+  
 
 // Actualizar progreso con insignias por ID
 router.put('/update-progress/:id', async(req, res) => {
@@ -244,19 +269,28 @@ router.get('/:id', async(req, res) => {
     }
 });
 
-router.put('/users/:id', async(req, res) => {
+// Obtener un usuario por ID
+router.get('/users/:id', async (req, res) => {
     try {
-        const updatedUser = await User.findByIdAndUpdate(req.params.id, req.body, {
-            new: true,
-            runValidators: true,
-        });
-        if (!updatedUser) return res.status(404).json({ msg: 'Usuario no encontrado' });
-        res.json(updatedUser);
+      const user = await User.findById(req.params.id);
+      if (!user) return res.status(404).json({ msg: 'Usuario no encontrado' });
+  
+      res.json({
+        id: user._id,
+        name: user.name,
+        email: user.email,
+        role: user.role,
+        avatar: user.avatar,
+        points: user.points,
+        createdAt: user.createdAt
+        
+      });
     } catch (err) {
-        console.error(err);
-        res.status(500).json({ msg: 'Error al actualizar usuario' });
+      console.error('❌ Error al obtener usuario:', err);
+      res.status(500).json({ msg: 'Error del servidor' });
     }
-});
+  });
+  
 
 router.delete('/users/:id', async(req, res) => {
     try {

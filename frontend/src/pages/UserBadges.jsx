@@ -18,7 +18,7 @@ export default function UserBadges() {
       id: 'primeros-pasos',
       name: 'Primeros Pasos', 
       description: 'Comienza tu aventura de aprendizaje',
-      points: 10,
+      points: 30,
       icon: '👣',
       color: '#FF9F1C'
     },
@@ -26,7 +26,7 @@ export default function UserBadges() {
       id: 'explorador',
       name: 'Explorador', 
       description: 'Descubridor de nuevos conocimientos',
-      points: 20,
+      points: 100,
       icon: '🥾',
       color: '#2EC4B6'
     },
@@ -34,7 +34,7 @@ export default function UserBadges() {
       id: 'aprendiz',
       name: 'Aprendiz', 
       description: 'Demuestra tu compromiso con el aprendizaje',
-      points: 30,
+      points: 300,
       icon: '📚',
       color: '#E71D36'
     },
@@ -42,7 +42,7 @@ export default function UserBadges() {
       id: 'vocabulario',
       name: 'Maestro de Vocabulario', 
       description: 'Domina las palabras esenciales',
-      points: 50,
+      points: 500,
       icon: '🔤',
       color: '#662E9B'
     },
@@ -50,7 +50,7 @@ export default function UserBadges() {
       id: 'gramatica',
       name: 'Experto en Gramática', 
       description: 'Conoce las reglas del idioma',
-      points: 80,
+      points: 700,
       icon: '📝',
       color: '#F86624'
     },
@@ -58,7 +58,7 @@ export default function UserBadges() {
       id: 'conversacion',
       name: 'Conversador Fluido', 
       description: 'Puedes mantener conversaciones básicas',
-      points: 120,
+      points: 1000,
       icon: '💬',
       color: '#118AB2'
     },
@@ -66,7 +66,7 @@ export default function UserBadges() {
       id: 'maestro',
       name: 'Maestro del Inglés', 
       description: 'Dominio intermedio del idioma',
-      points: 180,
+      points: 1500,
       icon: '👑',
       color: '#FFD166'
     },
@@ -74,7 +74,7 @@ export default function UserBadges() {
       id: 'leyenda',
       name: 'Leyenda de Novatrail', 
       description: 'Figura destacada en la comunidad',
-      points: 250,
+      points: 2000,
       icon: '🏆',
       color: '#06D6A0'
     },
@@ -82,7 +82,7 @@ export default function UserBadges() {
       id: 'heroe',
       name: 'Héroe del Conocimiento', 
       description: 'Ha alcanzado la excelencia académica',
-      points: 350,
+      points: 3500,
       icon: '🦸',
       color: '#EF476F'
     },
@@ -90,7 +90,7 @@ export default function UserBadges() {
       id: 'gran-maestro',
       name: 'Gran Maestro', 
       description: 'Dominio completo del idioma inglés',
-      points: 500,
+      points: 5000,
       icon: '🎓',
       color: '#073B4C'
     }

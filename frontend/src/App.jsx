@@ -24,7 +24,7 @@ import AboutUs from './pages/AboutUs';
 import AdminWeeklyActs from './pages/AdminWeeklyActs';
 import AdminPanel from './pages/AdminPanel';
 import AdminUsers from './pages/AdminUsers';
-
+import AdminActivities from './pages/AdminActivities'; 
 export default function App() {
   return (
     <BrowserRouter>
@@ -56,6 +56,7 @@ export default function App() {
         <Route element={<AdminLayout />}>
           <Route path="/admin"                       element={<AdminPanel />} />
           <Route path="/admin/users"                 element={<AdminUsers />} />
+          <Route path="/admin/activities"                 element={<AdminActivities />} />
           <Route path="/admin/weekly-challenges"     element={<AdminWeeklyActs />} />
         </Route>
 

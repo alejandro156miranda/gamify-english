@@ -83,6 +83,29 @@ router.post('/', async (req, res, next) => {
         next(err);
     }
 });
+
+// POST /api/challenges/quiz
+router.post('/challenges/quiz', async (req, res) => {
+    try {
+      const { title, description, reward, questions } = req.body;
+  
+      const newQuiz = new Challenge({
+        title,
+        description,
+        content: '', // no se usa para quiz
+        type: 'quiz',
+        reward,
+        questions // se guarda el array de preguntas
+      });
+  
+      await newQuiz.save();
+      res.status(201).json({ message: 'Quiz guardado correctamente', quiz: newQuiz });
+    } catch (error) {
+      console.error('Error al guardar el quiz:', error);
+      res.status(500).json({ message: 'Error del servidor' });
+    }
+  });
+  
   
 // Marcar reto semanal como completado por usuario
 router.post('/weekly/complete/:id', async (req, res) => {
@@ -106,6 +129,46 @@ router.post('/weekly/complete/:id', async (req, res) => {
       res.json({ msg: 'Reto completado', user });
     } catch (err) {
       res.status(500).json({ msg: 'Error al completar reto' });
+    }
+  });
+
+  router.get('/activities', async (req, res) => {
+    try {
+      const challenges = await Challenge.find();
+      res.json(challenges);
+    } catch (err) {
+      res.status(500).json({ error: 'Error al obtener los challenges' });
+    }
+  });
+  
+  // POST - Crear challenge
+  router.post('/activities', async (req, res) => {
+    try {
+      const challenge = new Challenge(req.body);
+      await challenge.save();
+      res.status(201).json(challenge);
+    } catch (err) {
+      res.status(400).json({ error: err.message });
+    }
+  });
+  
+  // PUT - Actualizar challenge
+  router.put('/activities/:id', async (req, res) => {
+    try {
+      const updated = await Challenge.findByIdAndUpdate(req.params.id, req.body, { new: true, runValidators: true });
+      res.json(updated);
+    } catch (err) {
+      res.status(400).json({ error: err.message });
+    }
+  });
+  
+  // DELETE - Eliminar challenge
+  router.delete('/activities/:id', async (req, res) => {
+    try {
+      await Challenge.findByIdAndDelete(req.params.id);
+      res.json({ msg: 'Challenge eliminado' });
+    } catch (err) {
+      res.status(500).json({ error: 'Error al eliminar el challenge' });
     }
   });
   

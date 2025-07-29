@@ -1,25 +1,23 @@
-// src/services/authService.js
-
 import axios from 'axios';
 
 const API = axios.create({
-    baseURL: `${process.env.REACT_APP_API_URL}/api/auth`,
+    baseURL: process.env.REACT_APP_API_URL,
     headers: { 'Content-Type': 'application/json' }
 });
 
 /**
  * Registrar un nuevo usuario.
- * @param {{ role:string, name:string, email:string, password:string, childId?:string }} data 
+ * POST https://.../api/auth/register
  */
-export const register = data => API.post('/register', data);
+export const register = data =>
+    API.post('/api/auth/register', data);
 
 /**
- * Iniciar sesión y gestionar token + badges.
- * @param {{ email:string, password:string }} data
- * @returns {Promise<{ token:string, user:object }>}
+ * Login y sincronización de badges + token.
+ * POST https://.../api/auth/login
  */
 export async function login(data) {
-    const res = await API.post('/login', data);
+    const res = await API.post('/api/auth/login', data);
     const result = res.data;
 
     if (!result.token || !result.user) {
@@ -40,18 +38,15 @@ export async function login(data) {
         { id: 'gran-maestro', points: 5000 }
     ];
 
-    // Extraer usuario y puntos actuales
+    // Sincronizar insignias según puntos
     const user = result.user;
     const puntos = user.points || 0;
-
-    // Calcular qué insignias le faltan
     const newBadges = badgeThresholds
         .filter(b => puntos >= b.points)
         .map(b => b.id)
         .filter(id => !user.badges.includes(id));
 
-    if (newBadges.length > 0) {
-        // Añadir nuevas insignias al objeto y al localStorage
+    if (newBadges.length) {
         user.badges = [...user.badges, ...newBadges];
     }
 
@@ -63,38 +58,36 @@ export async function login(data) {
 }
 
 /**
- * Obtener todos los usuarios.
+ * Leer todos los usuarios
+ * GET /api/auth/users
  */
 export const getUsers = () =>
-    API.get('/users').then(res => res.data);
+    API.get('/api/auth/users').then(res => res.data);
 
 /**
- * Obtener un usuario por su ID.
- * @param {string} id 
+ * Leer usuario por ID
+ * GET /api/auth/users/:id
  */
 export const getUserById = id =>
-    API.get(`/users/${id}`).then(res => res.data);
+    API.get(`/api/auth/users/${id}`).then(res => res.data);
 
 /**
- * Actualizar un usuario.
- * @param {string} id 
- * @param {object} data 
+ * Actualizar usuario
+ * PUT /api/auth/users/:id
  */
 export const updateUser = (id, data) =>
-    API.put(`/users/${id}`, data).then(res => res.data);
+    API.put(`/api/auth/users/${id}`, data).then(res => res.data);
 
 /**
- * Eliminar un usuario.
- * @param {string} id 
+ * Eliminar usuario
+ * DELETE /api/auth/users/:id
  */
 export const deleteUser = id =>
-    API.delete(`/users/${id}`).then(res => res.data);
+    API.delete(`/api/auth/users/${id}`).then(res => res.data);
 
 /**
- * Forzar reparación de insignias (recalcula según puntos).
- * @param {string} userId 
+ * Forzar recalcular insignias
+ * GET /api/auth/fix-badges/:userId
  */
-export const fixUserBadges = async userId => {
-    const res = await API.get(`/fix-badges/${userId}`);
-    return res.data;
-};
+export const fixUserBadges = userId =>
+    API.get(`/api/auth/fix-badges/${userId}`).then(res => res.data);

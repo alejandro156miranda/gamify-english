@@ -11,8 +11,13 @@ const challengesRoutes = require('./routes/challenges');
 const app = express();
 
 // --- Middlewares ---
-app.use(cors());
+
+
 app.use(express.json());
+app.use(cors({
+    origin: 'https://gamify-english.onrender.com' // tu frontend
+}));
+
 
 // --- Conexión a MongoDB ---
 mongoose.connect(process.env.MONGO_URI, {

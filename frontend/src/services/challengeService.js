@@ -1,4 +1,3 @@
-// src/services/challengeService.js
 import axios from 'axios';
 
 // Cliente Axios para los endpoints de "challenges"
@@ -11,19 +10,19 @@ const API = axios.create({
  * Obtiene todos los retos
  * GET /api/challenges
  */
-export const getAllChallenges = () => API2.get('/');
+export const getAllChallenges = () => API.get('/');
 
 /**
  * Obtiene retos semanales
  * GET /api/challenges/weekly
  */
-export const getWeeklyChallenges = () => API2.get('/weekly');
+export const getWeeklyChallenges = () => API.get('/weekly');
 
 /**
  * Obtiene un reto por ID
  * GET /api/challenges/:id
  */
-export const getChallengeById = id => API2.get(`/${id}`);
+export const getChallengeById = id => API.get(`/${id}`);
 
 /**
  * Función de conveniencia para obtener datos (misma ruta que getAllChallenges)

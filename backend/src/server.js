@@ -8,7 +8,6 @@ const cors = require('cors');
 // Rutas
 const authRoutes = require('./routes/auth');
 const challengesRoutes = require('./routes/challenges');
-const raffleRoutes = require('./routes/raffle'); // Asegúrate de tener este archivo
 
 const app = express();
 
@@ -35,7 +34,7 @@ mongoose.connect(process.env.MONGO_URI, {
 // --- Rutas de la API ---
 app.use('/api/auth', authRoutes);
 app.use('/api/challenges', challengesRoutes);
-app.use('/api/raffle', raffleRoutes);
+
 
 // --- Ruta raíz ---
 app.get('/', (req, res) => res.send('🚀 API funcionando correctamente'));

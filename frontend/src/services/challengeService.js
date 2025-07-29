@@ -2,7 +2,7 @@
 import axios from 'axios';
 
 // Cliente Axios para los endpoints de "challenges"
-const API2 = axios.create({
+const API = axios.create({
     baseURL: `${process.env.REACT_APP_API_URL}/api/challenges`,
     headers: { 'Content-Type': 'application/json' }
 });
@@ -30,7 +30,7 @@ export const getChallengeById = id => API2.get(`/${id}`);
  */
 export const getWeeklyChallenge = async() => {
     try {
-        const res = await API2.get('/');
+        const res = await API.get('/');
         return res.data;
     } catch (err) {
         console.error('❌ Error al obtener el reto semanal:', err);
@@ -43,7 +43,7 @@ export const getWeeklyChallenge = async() => {
  * POST /api/challenges/weekly/complete/:challengeId
  */
 export const completeChallenge = async(challengeId, userId) => {
-    const res = await API2.post(`/weekly/complete/${challengeId}`, { userId });
+    const res = await API.post(`/weekly/complete/${challengeId}`, { userId });
     return res.data;
 };
 

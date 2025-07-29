@@ -1,5 +1,3 @@
-// backend/src/server.js
-
 require('dotenv').config();
 const express = require('express');
 const mongoose = require('mongoose');
@@ -14,20 +12,17 @@ const app = express();
 // --- Middlewares ---
 app.use(express.json());
 app.use(cors({
+    // Permite tu frontend en Render
     origin: [
-        'https://gamify-english.onrender.com',
-        'https://gamify-english-frontend.onrender.com'
+        'https://gamify-english-frontend.onrender.com',
+        'https://gamify-english.onrender.com'
     ],
     methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
     allowedHeaders: ['Content-Type', 'Authorization']
 }));
 
 // --- Conexión a MongoDB ---
-mongoose.connect(process.env.MONGO_URI, {
-        // estas opciones quedan obsoletas en v4+, pero no hacen daño
-        useNewUrlParser: true,
-        useUnifiedTopology: true
-    })
+mongoose.connect(process.env.MONGO_URI)
     .then(() => console.log('✅ MongoDB conectado'))
     .catch(err => console.error('❌ Error MongoDB:', err));
 
@@ -35,18 +30,15 @@ mongoose.connect(process.env.MONGO_URI, {
 app.use('/api/auth', authRoutes);
 app.use('/api/challenges', challengesRoutes);
 
-
-// --- Ruta raíz ---
+// --- Root & Error handler ---
 app.get('/', (req, res) => res.send('🚀 API funcionando correctamente'));
-
-// --- Manejador de errores global ---
 app.use((err, req, res, next) => {
     console.error(err.stack);
     res.status(500).json({ msg: err.message });
 });
 
-// --- Arranque del servidor ---
+// --- Arranque ---
 const PORT = process.env.PORT || 4000;
-app.listen(PORT, () => {
-    console.log(`🔊 Server escuchando en puerto ${PORT}`);
-});
+app.listen(PORT, () =>
+    console.log(`🔊 Server escuchando en puerto ${PORT}`)
+);

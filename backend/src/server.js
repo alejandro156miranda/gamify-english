@@ -8,22 +8,14 @@ const challengesRoutes = require('./routes/challenges');
 
 const app = express();
 
-// --- CORS: debe ir antes de las rutas ---
-app.use(cors({
-    origin: [
-        'https://gamify-english-frontend.onrender.com',
-        'https://gamify-english-backend.onrender.com'
-    ],
-    methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
-    allowedHeaders: ['Content-Type', 'Authorization']
-}));
-// Responder preflight para todas las rutas
-app.options('*', cors());
+// 1) CORS abierto (mide sólo en producción si quieres restringirlo):
+app.use(cors());
+app.options('*', cors()); // preflight para todo
 
-// --- Parseo de JSON ---
+// 2) JSON parser
 app.use(express.json());
 
-// --- Conexión a MongoDB ---
+// 3) Conectar a Mongo
 mongoose.connect(process.env.MONGO_URI, {
         useNewUrlParser: true,
         useUnifiedTopology: true
@@ -31,21 +23,19 @@ mongoose.connect(process.env.MONGO_URI, {
     .then(() => console.log('✅ MongoDB conectado'))
     .catch(err => console.error('❌ Error MongoDB:', err));
 
-// --- Rutas de la API ---
+// 4) Rutas
 app.use('/api/auth', authRoutes);
 app.use('/api/challenges', challengesRoutes);
 
-// --- Ruta raíz de prueba ---
+// 5) Ruta raíz
 app.get('/', (req, res) => res.send('🚀 API funcionando correctamente'));
 
-// --- Manejador global de errores ---
+// 6) Manejador de errores
 app.use((err, req, res, next) => {
     console.error(err.stack);
     res.status(500).json({ msg: err.message });
 });
 
-// --- Arranque del servidor ---
+// 7) Start
 const PORT = process.env.PORT || 4000;
-app.listen(PORT, () =>
-    console.log(`🔊 Server escuchando en puerto ${PORT}`)
-);
+app.listen(PORT, () => console.log(`🔊 Server escuchando en puerto ${PORT}`));

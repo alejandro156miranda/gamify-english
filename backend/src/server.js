@@ -9,30 +9,18 @@ const challengesRoutes = require('./routes/challenges');
 const app = express();
 
 // 1. Configuración CORS mejorada
-const allowedOrigins = [
-    'https://gamify-english-frontend.onrender.com',
-    'https://gamify-english.onrender.com'
-];
-
-app.use(cors({
-    origin: function(origin, callback) {
-        if (!origin || allowedOrigins.indexOf(origin) !== -1) {
-            callback(null, true);
-        } else {
-            callback(new Error('Not allowed by CORS'));
-        }
-    },
+const corsOptions = {
+    origin: 'https://gamify-english-frontend.onrender.com',
     methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
     allowedHeaders: ['Content-Type', 'Authorization'],
     credentials: true
-}));
+};
 
-// 2. Middleware para manejar preflight OPTIONS
-app.options('*', cors());
+app.use(cors(corsOptions));
 
-// 3. Middleware para headers manuales
+// 2. Middleware para agregar headers CORS manualmente
 app.use((req, res, next) => {
-    res.header('Access-Control-Allow-Origin', allowedOrigins.join(','));
+    res.header('Access-Control-Allow-Origin', 'https://gamify-english-frontend.onrender.com');
     res.header('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS');
     res.header('Access-Control-Allow-Headers', 'Content-Type, Authorization');
     res.header('Access-Control-Allow-Credentials', 'true');
@@ -45,24 +33,22 @@ mongoose.connect(process.env.MONGO_URI)
     .then(() => console.log('✅ MongoDB conectado'))
     .catch(err => console.error('❌ Error MongoDB:', err));
 
-// 4. Rutas con prefijo /api
-app.use('/api/auth', authRoutes);
-app.use('/api/challenges', challengesRoutes);
+app.use('/auth', authRoutes);
+app.use('/challenges', challengesRoutes);
 
 app.get('/', (req, res) => res.send('🚀 API funcionando correctamente'));
 
-// 5. Middleware de errores con CORS
+// 3. Middleware de errores con headers CORS
 app.use((err, req, res, next) => {
     console.error(err.stack);
 
-    res.header('Access-Control-Allow-Origin', allowedOrigins.join(','));
+    // Agregar headers CORS incluso en errores
+    res.header('Access-Control-Allow-Origin', 'https://gamify-english-frontend.onrender.com');
     res.header('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS');
     res.header('Access-Control-Allow-Headers', 'Content-Type, Authorization');
     res.header('Access-Control-Allow-Credentials', 'true');
 
-    res.status(err.status || 500).json({
-        error: err.message || 'Error interno del servidor'
-    });
+    res.status(500).json({ msg: err.message });
 });
 
 const PORT = process.env.PORT || 4000;

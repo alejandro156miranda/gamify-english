@@ -5,26 +5,16 @@ const API = axios.create({
     headers: { 'Content-Type': 'application/json' }
 });
 
-/**
- * Registrar un nuevo usuario.
- * POST https://.../api/auth/register
- */
-export const register = data =>
-    API.post('/api/auth/register', data);
+export const register = data => API.post('/auth/register', data);
 
-/**
- * Login y sincronización de badges + token.
- * POST https://.../api/auth/login
- */
 export async function login(data) {
-    const res = await API.post('/api/auth/login', data);
+    const res = await API.post('/auth/login', data);
     const result = res.data;
 
     if (!result.token || !result.user) {
         throw new Error('Respuesta inválida del servidor');
     }
 
-    // Umbrales de puntos para cada insignia
     const badgeThresholds = [
         { id: 'primeros-pasos', points: 30 },
         { id: 'explorador', points: 100 },
@@ -38,7 +28,6 @@ export async function login(data) {
         { id: 'gran-maestro', points: 5000 }
     ];
 
-    // Sincronizar insignias según puntos
     const user = result.user;
     const puntos = user.points || 0;
     const newBadges = badgeThresholds
@@ -50,44 +39,14 @@ export async function login(data) {
         user.badges = [...user.badges, ...newBadges];
     }
 
-    // Guardar token y usuario en localStorage
     localStorage.setItem('token', result.token);
     localStorage.setItem('user', JSON.stringify(user));
 
     return { token: result.token, user };
 }
 
-/**
- * Leer todos los usuarios
- * GET /api/auth/users
- */
-export const getUsers = () =>
-    API.get('/api/auth/users').then(res => res.data);
-
-/**
- * Leer usuario por ID
- * GET /api/auth/users/:id
- */
-export const getUserById = id =>
-    API.get(`/api/auth/users/${id}`).then(res => res.data);
-
-/**
- * Actualizar usuario
- * PUT /api/auth/users/:id
- */
-export const updateUser = (id, data) =>
-    API.put(`/api/auth/users/${id}`, data).then(res => res.data);
-
-/**
- * Eliminar usuario
- * DELETE /api/auth/users/:id
- */
-export const deleteUser = id =>
-    API.delete(`/api/auth/users/${id}`).then(res => res.data);
-
-/**
- * Forzar recalcular insignias
- * GET /api/auth/fix-badges/:userId
- */
-export const fixUserBadges = userId =>
-    API.get(`/api/auth/fix-badges/${userId}`).then(res => res.data);
+export const getUsers = () => API.get('/auth/users').then(res => res.data);
+export const getUserById = id => API.get(`/auth/users/${id}`).then(res => res.data);
+export const updateUser = (id, data) => API.put(`/auth/users/${id}`, data).then(res => res.data);
+export const deleteUser = id => API.delete(`/auth/users/${id}`).then(res => res.data);
+export const fixUserBadges = userId => API.get(`/auth/fix-badges/${userId}`).then(res => res.data);

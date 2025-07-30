@@ -5,7 +5,7 @@ const API = axios.create({
     headers: { 'Content-Type': 'application/json' }
 });
 
-export const register = data => API.post('/auth/register', data);
+export const register = data => API.post('/api/auth/register', data);
 
 export async function login(data) {
     const res = await API.post('/auth/login', data);
@@ -45,8 +45,8 @@ export async function login(data) {
     return { token: result.token, user };
 }
 
-export const getUsers = () => API.get('/auth/users').then(res => res.data);
-export const getUserById = id => API.get(`/auth/users/${id}`).then(res => res.data);
-export const updateUser = (id, data) => API.put(`/auth/users/${id}`, data).then(res => res.data);
-export const deleteUser = id => API.delete(`/auth/users/${id}`).then(res => res.data);
-export const fixUserBadges = userId => API.get(`/auth/fix-badges/${userId}`).then(res => res.data);
+export const getUsers = () => API.get('/api/auth/users').then(res => res.data);
+export const getUserById = id => API.get(`/api/auth/users/${id}`).then(res => res.data);
+export const updateUser = (id, data) => API.put(`/api/auth/users/${id}`, data).then(res => res.data);
+export const deleteUser = id => API.delete(`/api/auth/users/${id}`).then(res => res.data);
+export const fixUserBadges = userId => API.get(`/api/auth/fix-badges/${userId}`).then(res => res.data);

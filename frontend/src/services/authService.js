@@ -1,20 +1,17 @@
 import axios from 'axios';
-
 const API = axios.create({
-    baseURL: process.env.REACT_APP_API_URL,
+    baseURL: 'http://localhost:5000/api/auth',
     headers: { 'Content-Type': 'application/json' }
 });
-
-export const register = data => API.post('/api/auth/register', data);
-
+export const register = data => API.post('/register', data);
+// LOGIN ACTUALIZADO PARA MANEJAR INSIGNIAS
 export async function login(data) {
-    const res = await API.post('/auth/login', data);
+    const res = await API.post('/login', data);
     const result = res.data;
-
     if (!result.token || !result.user) {
         throw new Error('Respuesta inválida del servidor');
     }
-
+    // Verificar si hay insignias faltantes
     const badgeThresholds = [
         { id: 'primeros-pasos', points: 30 },
         { id: 'explorador', points: 100 },
@@ -27,26 +24,48 @@ export async function login(data) {
         { id: 'heroe', points: 3500 },
         { id: 'gran-maestro', points: 5000 }
     ];
-
     const user = result.user;
     const puntos = user.points || 0;
+    // Agregar insignias que faltan
     const newBadges = badgeThresholds
         .filter(b => puntos >= b.points)
         .map(b => b.id)
         .filter(id => !user.badges.includes(id));
-
-    if (newBadges.length) {
+    if (newBadges.length > 0) {
         user.badges = [...user.badges, ...newBadges];
+        localStorage.setItem('user', JSON.stringify(user));
     }
-
     localStorage.setItem('token', result.token);
     localStorage.setItem('user', JSON.stringify(user));
-
-    return { token: result.token, user };
+    return result;
 }
-
-export const getUsers = () => API.get('/api/auth/users').then(res => res.data);
-export const getUserById = id => API.get(`/api/auth/users/${id}`).then(res => res.data);
-export const updateUser = (id, data) => API.put(`/api/auth/users/${id}`, data).then(res => res.data);
-export const deleteUser = id => API.delete(`/api/auth/users/${id}`).then(res => res.data);
-export const fixUserBadges = userId => API.get(`/api/auth/fix-badges/${userId}`).then(res => res.data);
+// Leer todos los usuarios
+export const getUsers = async() => {
+    const res = await API.get('/users');
+    return res.data;
+};
+// Leer un usuario por ID
+export const getUserById = async id => {
+    const res = await API.get(`/users/${id}`);
+    return res.data;
+};
+// Actualizar usuario
+export const updateUser = async(id, data) => {
+    const res = await API.put(`/users/${id}`, data);
+    return res.data;
+};
+// Eliminar usuario
+export const deleteUser = async id => {
+    const res = await API.delete(`/users/${id}`);
+    return res.data;
+};
+// REPARAR INSIGNIAS MANUALMENTE
+export const fixUserBadges = async(userId) => {
+    try {
+        const res = await API.get(`/fix-badges/${userId}`);
+        return res.data;
+    } catch (err) {
+        console.error('Error reparando insignias:', err);
+        throw err;
+    }
+};

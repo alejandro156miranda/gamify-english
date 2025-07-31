@@ -1,6 +1,6 @@
 import axios from 'axios';
 const API2 = axios.create({
-    baseURL: 'http://localhost:5000',
+    baseURL: process.env.REACT_APP_API_URL, // Usa la variable de entorno
     headers: { 'Content-Type': 'application/json' }
 });
 export const getAllChallenges = () => API2.get('/api/challenges');
@@ -22,7 +22,7 @@ export const completeChallenge = async(challengeId, userId) => {
 // FUNCIÓN ACTUALIZADA PARA MANEJAR INSIGNIAS
 export const updateUserProgress = async(userId, points, type = 'quiz') => {
     try {
-        const res = await axios.put(`http://localhost:5000/api/auth/update-progress/${userId}`, {
+        const res = await axios.put(`${process.env.REACT_APP_API_URL}/api/auth/update-progress/${userId}`, {
             points,
             type
         });

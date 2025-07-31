@@ -1,11 +1,15 @@
 import axios from 'axios';
+
+const baseURL = process.env.REACT_APP_API_URL || 'https://gamify-english-backend.onrender.com';
 const API2 = axios.create({
-    baseURL: 'http://localhost:5000',
+    baseURL: baseURL,
     headers: { 'Content-Type': 'application/json' }
 });
+
 export const getAllChallenges = () => API2.get('/api/challenges');
 export const getWeeklyChallenges = () => API2.get('/api/challenges/weekly');
 export const getChallengeById = id => API2.get(`/api/challenges/${id}`);
+
 export const getWeeklyChallenge = async() => {
     try {
         const res = await API2.get('/api/challenges');
@@ -15,17 +19,20 @@ export const getWeeklyChallenge = async() => {
         throw err;
     }
 };
+
 export const completeChallenge = async(challengeId, userId) => {
     const res = await API2.post(`/api/challenges/weekly/complete/${challengeId}`, { userId });
     return res.data;
 };
+
 // FUNCIÓN ACTUALIZADA PARA MANEJAR INSIGNIAS
 export const updateUserProgress = async(userId, points, type = 'quiz') => {
     try {
-        const res = await axios.put(`http://localhost:5000/api/auth/update-progress/${userId}`, {
+        const res = await axios.put(`${baseURL}/api/auth/update-progress/${userId}`, {
             points,
             type
         });
+
         // ACTUALIZAR LOCALSTORAGE CON NUEVAS INSIGNIAS
         if (res.data && res.data.user) {
             const user = JSON.parse(localStorage.getItem('user'));
@@ -34,7 +41,7 @@ export const updateUserProgress = async(userId, points, type = 'quiz') => {
                     ...user,
                     points: res.data.user.points,
                     level: res.data.user.level,
-                    badges: res.data.user.badges // INSIGNIAS ACTUALIZADAS
+                    badges: res.data.user.badges
                 };
                 localStorage.setItem('user', JSON.stringify(updatedUser));
             }

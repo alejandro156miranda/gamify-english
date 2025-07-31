@@ -1,10 +1,10 @@
 const express = require('express');
+const router = express.Router();
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 const User = require('../models/User');
-const router = express.Router();
 
-// Insignias
+// Definición de insignias con IDs
 const badgeThresholds = [
     { id: 'primeros-pasos', name: 'Primeros Pasos', points: 10 },
     { id: 'explorador', name: 'Explorador', points: 20 },
@@ -18,6 +18,7 @@ const badgeThresholds = [
     { id: 'gran-maestro', name: 'Gran Maestro', points: 500 }
 ];
 
+// Mapa para convertir nombres a IDs
 const badgeNameToIdMap = {
     'Primeros Pasos': 'primeros-pasos',
     'Explorador': 'explorador',
@@ -31,7 +32,7 @@ const badgeNameToIdMap = {
     'Gran Maestro': 'gran-maestro'
 };
 
-// ── REGISTER ───────────────────────────────────────────────────────────────
+// Registro
 router.post('/register', async(req, res) => {
     const { role, name, email, password, childId } = req.body;
     try {
@@ -55,37 +56,53 @@ router.post('/register', async(req, res) => {
     }
 });
 
-// ── LOGIN ──────────────────────────────────────────────────────────────────
+// Login con conversión de insignias
 router.post('/login', async(req, res) => {
     try {
         const { email, password } = req.body;
         const user = await User.findOne({ email });
-        if (!user) return res.status(404).json({ msg: 'Usuario no encontrado' });
-        if (!await bcrypt.compare(password, user.passwordHash)) {
+
+        if (!user) {
+            return res.status(404).json({ msg: 'Usuario no encontrado' });
+        }
+
+        const isMatch = await bcrypt.compare(password, user.passwordHash);
+        if (!isMatch) {
             return res.status(401).json({ msg: 'Credenciales incorrectas' });
         }
 
-        // normalizar badges
+        // Convertir insignias de nombres a IDs
         let needsSave = false;
-        const converted = user.badges.map(b => badgeNameToIdMap[b] || b);
-        const uniqueBadges = [...new Set(converted)];
+        const convertedBadges = user.badges.map(badgeName => {
+            return badgeNameToIdMap[badgeName] || badgeName;
+        });
+
+        // Filtrar IDs duplicados
+        const uniqueBadges = [...new Set(convertedBadges)];
+
+        // Verificar si hubo cambios
         if (uniqueBadges.length !== user.badges.length ||
             !uniqueBadges.every(b => user.badges.includes(b))) {
             user.badges = uniqueBadges;
             needsSave = true;
         }
-        for (const b of badgeThresholds) {
-            if (user.points >= b.points && !user.badges.includes(b.id)) {
-                user.badges.push(b.id);
+
+        // Agregar insignias faltantes por puntos
+        for (const badge of badgeThresholds) {
+            if (user.points >= badge.points && !user.badges.includes(badge.id)) {
+                user.badges.push(badge.id);
                 needsSave = true;
             }
         }
+
+        // Eliminar duplicados nuevamente
         if (needsSave) {
             user.badges = [...new Set(user.badges)];
             await user.save();
         }
 
         const token = jwt.sign({ id: user._id }, process.env.JWT_SECRET, { expiresIn: '1d' });
+
         res.json({
             token,
             user: {
@@ -97,8 +114,8 @@ router.post('/login', async(req, res) => {
                 badges: user.badges,
                 avatar: user.avatar,
                 completedChallenges: user.completedChallenges,
-                role: user.role
-            }
+                role: user.role,
+            },
         });
     } catch (err) {
         console.error('❌ Error al iniciar sesión:', err);
@@ -106,23 +123,23 @@ router.post('/login', async(req, res) => {
     }
 });
 
-// ── UPDATE PROFILE ─────────────────────────────────────────────────────────
 router.put('/update-profile', async(req, res) => {
     try {
-        const authHeader = req.headers.authorization || '';
-        const token = authHeader.split(' ')[1];
+        const authHeader = req.headers.authorization;
+        const token = authHeader && authHeader.split(' ')[1];
         if (!token) return res.status(401).json({ msg: 'Token no proporcionado' });
-
         const decoded = jwt.verify(token, process.env.JWT_SECRET);
         const user = await User.findById(decoded.id);
         if (!user) return res.status(404).json({ msg: 'Usuario no encontrado' });
 
         const { name, avatar, password } = req.body;
-        if (name !== undefined) user.name = name;
+        if (name) user.name = name;
         if (avatar !== undefined) user.avatar = avatar;
-        if (password) user.passwordHash = await bcrypt.hash(password, 10);
+        if (password) {
+            const hash = await bcrypt.hash(password, 10);
+            user.passwordHash = hash;
+        }
         await user.save();
-
         res.json({
             id: user._id,
             name: user.name,
@@ -130,7 +147,8 @@ router.put('/update-profile', async(req, res) => {
             role: user.role,
             avatar: user.avatar,
             points: user.points,
-            createdAt: user.createdAt
+            createdAt: user.createdAt,
+            password: user.password,
         });
     } catch (err) {
         console.error(err);
@@ -138,7 +156,7 @@ router.put('/update-profile', async(req, res) => {
     }
 });
 
-// ── ADMIN: UPDATE ANY USER ─────────────────────────────────────────────────
+// Actualizar usuario por ID (Admin)
 router.put('/users/:id', async(req, res) => {
     try {
         const { name, email, role } = req.body;
@@ -148,18 +166,24 @@ router.put('/users/:id', async(req, res) => {
         user.name = name !== undefined ? name : user.name;
         user.email = email !== undefined ? email : user.email;
         user.role = role !== undefined ? role : user.role;
+
         await user.save();
 
-        res.json({ id: user._id, name: user.name, email: user.email, role: user.role });
+        res.json({
+            id: user._id,
+            name: user.name,
+            email: user.email,
+            role: user.role,
+        });
     } catch (err) {
         console.error('❌ Error al actualizar usuario:', err);
         res.status(500).json({ msg: 'Error al actualizar usuario' });
     }
 });
 
-// ── UPDATE PROGRESS ────────────────────────────────────────────────────────
+// Actualizar progreso con insignias por ID
 router.put('/update-progress/:id', async(req, res) => {
-    const { points } = req.body;
+    const { points, type } = req.body;
     try {
         const user = await User.findById(req.params.id);
         if (!user) return res.status(404).json({ msg: 'Usuario no encontrado' });
@@ -167,14 +191,21 @@ router.put('/update-progress/:id', async(req, res) => {
         user.points += points;
         user.level = Math.floor(user.points / 100) + 1;
 
-        const newBadges = badgeThresholds
-            .filter(b => user.points >= b.points && !user.badges.includes(b.id))
-            .map(b => b.id);
+        const newBadges = [];
 
+        // Verificar cada insignia
+        for (const badge of badgeThresholds) {
+            if (user.points >= badge.points && !user.badges.includes(badge.id)) {
+                newBadges.push(badge.id);
+            }
+        }
+
+        // Agregar nuevas insignias si existen
         if (newBadges.length > 0) {
             user.badges = [...new Set([...user.badges, ...newBadges])];
-            console.log('🎉 Nuevas insignias:', newBadges);
+            console.log(`🎉 Nuevas insignias: ${newBadges.join(', ')}`);
         }
+
         await user.save();
 
         res.json({
@@ -192,17 +223,19 @@ router.put('/update-progress/:id', async(req, res) => {
     }
 });
 
-// ── FIX BADGES ─────────────────────────────────────────────────────────────
+// Ruta para reparar insignias manualmente
 router.get('/fix-badges/:userId', async(req, res) => {
     try {
         const user = await User.findById(req.params.userId);
         if (!user) return res.status(404).json({ msg: 'Usuario no encontrado' });
 
-        const all = badgeThresholds
-            .filter(b => user.points >= b.points)
-            .map(b => b.id);
+        // Agregar todas las insignias que correspondan por puntos
+        const allBadges = badgeThresholds
+            .filter(badge => user.points >= badge.points)
+            .map(badge => badge.id);
 
-        user.badges = [...new Set(all)];
+        user.badges = [...new Set(allBadges)];
+
         await user.save();
         res.json({ msg: 'Insignias reparadas', badges: user.badges });
     } catch (err) {
@@ -211,7 +244,7 @@ router.get('/fix-badges/:userId', async(req, res) => {
     }
 });
 
-// ── LIST / GET USERS ───────────────────────────────────────────────────────
+// Obtener todos los usuarios
 router.get('/users', async(req, res) => {
     try {
         const users = await User.find();
@@ -221,30 +254,33 @@ router.get('/users', async(req, res) => {
         res.status(500).json({ msg: 'Error al obtener usuarios' });
     }
 });
+
+// Obtener un usuario por ID
 router.get('/users/:id', async(req, res) => {
     try {
-        const u = await User.findById(req.params.id);
-        if (!u) return res.status(404).json({ msg: 'Usuario no encontrado' });
+        const user = await User.findById(req.params.id);
+        if (!user) return res.status(404).json({ msg: 'Usuario no encontrado' });
+
         res.json({
-            id: u._id,
-            name: u.name,
-            email: u.email,
-            role: u.role,
-            avatar: u.avatar,
-            points: u.points,
-            createdAt: u.createdAt
+            id: user._id,
+            name: user.name,
+            email: user.email,
+            role: user.role,
+            avatar: user.avatar,
+            points: user.points,
+            createdAt: user.createdAt
         });
     } catch (err) {
-        console.error(err);
+        console.error('❌ Error al obtener usuario:', err);
         res.status(500).json({ msg: 'Error del servidor' });
     }
 });
 
 router.delete('/users/:id', async(req, res) => {
     try {
-        const d = await User.findByIdAndDelete(req.params.id);
-        if (!d) return res.status(404).json({ msg: 'Usuario no encontrado' });
-        res.json({ msg: 'Usuario eliminado', deletedUser: d });
+        const deletedUser = await User.findByIdAndDelete(req.params.id);
+        if (!deletedUser) return res.status(404).json({ msg: 'Usuario no encontrado' });
+        res.json({ msg: 'Usuario eliminado', deletedUser });
     } catch (err) {
         console.error(err);
         res.status(500).json({ msg: 'Error al eliminar usuario' });

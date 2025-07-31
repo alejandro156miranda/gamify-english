@@ -34,7 +34,7 @@ const badgeNameToIdMap = {
 };
 
 // Middleware para verificar métodos HTTP en rutas críticas
-router.all('/register', (req, res, next) => {
+router.post('/register', (req, res, next) => {
     if (req.method !== 'POST') {
         return res.status(405).json({
             success: false,
@@ -46,7 +46,7 @@ router.all('/register', (req, res, next) => {
     next();
 });
 
-router.all('/login', (req, res, next) => {
+router.post('/login', (req, res, next) => {
     if (req.method !== 'POST') {
         return res.status(405).json({
             success: false,

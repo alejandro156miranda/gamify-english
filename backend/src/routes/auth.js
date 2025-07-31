@@ -148,7 +148,6 @@ router.put('/update-profile', async(req, res) => {
             avatar: user.avatar,
             points: user.points,
             createdAt: user.createdAt,
-            password: user.password,
         });
     } catch (err) {
         console.error(err);
@@ -156,25 +155,19 @@ router.put('/update-profile', async(req, res) => {
     }
 });
 
-// Actualizar usuario por ID (Admin)
+// CORRECCIÓN: Operadores de fusión nula sin espacios
 router.put('/users/:id', async(req, res) => {
     try {
         const { name, email, role } = req.body;
-
-        // Validar datos de entrada
-        if (!name && !email && !role) {
-            return res.status(400).json({ msg: 'Proporciona al menos un campo para actualizar' });
-        }
-
         const user = await User.findById(req.params.id);
-        if (!user) {
-            return res.status(404).json({ msg: 'Usuario no encontrado' });
-        }
+        if (!user) return res.status(404).json({ msg: 'Usuario no encontrado' });
+
 
         // Actualizar solo los campos proporcionados
         if (name) user.name = name;
         if (email) user.email = email;
         if (role) user.role = role;
+
 
         await user.save();
 
@@ -183,7 +176,6 @@ router.put('/users/:id', async(req, res) => {
             name: user.name,
             email: user.email,
             role: user.role,
-            msg: 'Usuario actualizado correctamente'
         });
     } catch (err) {
         console.error('❌ Error al actualizar usuario:', err);
@@ -285,7 +277,6 @@ router.get('/users/:id', async(req, res) => {
         res.status(500).json({ msg: 'Error del servidor' });
     }
 });
-
 
 router.delete('/users/:id', async(req, res) => {
     try {

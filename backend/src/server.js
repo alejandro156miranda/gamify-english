@@ -11,8 +11,8 @@ const app = express();
 
 // --- Configuración CORRECTA de CORS ---
 const allowedOrigins = [
-    'https://gamify-english-kgz3.onrender.com', // Tu frontend
-    'http://localhost:3000' // Desarrollo local
+    'https://gamify-english-kgz3.onrender.com',
+    'http://localhost:3000'
 ];
 
 const corsOptions = {
@@ -31,7 +31,6 @@ const corsOptions = {
 app.use(cors(corsOptions));
 app.options('*', cors(corsOptions)); // Habilitar preflight para todas las rutas
 
-// --- Middleware adicional ---
 app.use(express.json());
 
 // --- Conexión a MongoDB ---
@@ -53,12 +52,11 @@ app.get('/', (req, res) => res.send('🚀 API funcionando correctamente'));
 app.use((err, req, res, next) => {
     console.error(err.stack);
 
-    // Manejar errores CORS específicamente
     if (err.message === 'Not allowed by CORS') {
         return res.status(403).json({ msg: 'Origen no permitido' });
     }
 
-    res.status(500).json({ msg: err.message });
+    res.status(500).json({ msg: err.message || 'Algo salió mal' });
 });
 
 // --- Puerto de escucha ---

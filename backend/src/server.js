@@ -9,18 +9,29 @@ const challengesRoutes = require('./routes/challenges');
 
 const app = express();
 
-// --- Configuración avanzada de CORS ---
+// --- Configuración CORRECTA de CORS ---
+const allowedOrigins = [
+    'https://gamify-english-kgz3.onrender.com', // Tu frontend
+    'http://localhost:3000' // Desarrollo local
+];
+
 const corsOptions = {
-    origin: [
-        'https://gamify-english-frontend.onrender.com', // URL de tu frontend en Render
-        'http://localhost:3000' // Para desarrollo local
-    ],
-    methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
+    origin: function(origin, callback) {
+        if (!origin || allowedOrigins.indexOf(origin) !== -1) {
+            callback(null, true);
+        } else {
+            callback(new Error('Not allowed by CORS'));
+        }
+    },
     credentials: true,
-    optionsSuccessStatus: 204
+    methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+    allowedHeaders: ['Content-Type', 'Authorization']
 };
 
 app.use(cors(corsOptions));
+app.options('*', cors(corsOptions)); // Habilitar preflight para todas las rutas
+
+// --- Middleware adicional ---
 app.use(express.json());
 
 // --- Conexión a MongoDB ---
@@ -41,6 +52,12 @@ app.get('/', (req, res) => res.send('🚀 API funcionando correctamente'));
 // --- Error handler genérico ---
 app.use((err, req, res, next) => {
     console.error(err.stack);
+
+    // Manejar errores CORS específicamente
+    if (err.message === 'Not allowed by CORS') {
+        return res.status(403).json({ msg: 'Origen no permitido' });
+    }
+
     res.status(500).json({ msg: err.message });
 });
 

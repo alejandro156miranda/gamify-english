@@ -1,9 +1,9 @@
 const express = require('express');
-const router = express.Router();
 const Challenge = require('../models/Challenge');
 const User = require('../models/User');
+const router = express.Router();
 
-// Listar todos los retos
+// ── LIST ALL ────────────────────────────────────────────────────────────────
 router.get('/', async(req, res, next) => {
     try {
         const list = await Challenge.find();
@@ -13,7 +13,17 @@ router.get('/', async(req, res, next) => {
     }
 });
 
-// Obtener un reto por ID
+// ── WEEKLY FIRST (PRECEDENCE) ───────────────────────────────────────────────
+router.get('/weekly', async(req, res, next) => {
+    try {
+        const weekly = await Challenge.find({ isWeekly: true });
+        res.json(weekly);
+    } catch (err) {
+        next(err);
+    }
+});
+
+// ── BY ID ───────────────────────────────────────────────────────────────────
 router.get('/:id', async(req, res, next) => {
     try {
         const ch = await Challenge.findById(req.params.id);
@@ -24,42 +34,7 @@ router.get('/:id', async(req, res, next) => {
     }
 });
 
-// Actualizar reto
-router.put('/:id', async(req, res, next) => {
-    try {
-        const updatedChallenge = await Challenge.findByIdAndUpdate(req.params.id, req.body, {
-            new: true,
-            runValidators: true,
-        });
-        if (!updatedChallenge) return res.status(404).json({ msg: 'Reto no encontrado' });
-        res.json(updatedChallenge);
-    } catch (err) {
-        next(err);
-    }
-});
-
-// Eliminar reto
-router.delete('/:id', async(req, res, next) => {
-    try {
-        const deletedChallenge = await Challenge.findByIdAndDelete(req.params.id);
-        if (!deletedChallenge) return res.status(404).json({ msg: 'Reto no encontrado' });
-        res.json({ msg: 'Reto eliminado', deletedChallenge });
-    } catch (err) {
-        next(err);
-    }
-});
-
-// Listar solo retos semanales (versión corregida)
-router.get('/weekly', async(req, res, next) => {
-    try {
-        const weekly = await Challenge.find({ isWeekly: true });
-        res.json(weekly);
-    } catch (err) {
-        next(err);
-    }
-});
-
-// Crear reto
+// ── CREATE ─────────────────────────────────────────────────────────────────
 router.post('/', async(req, res, next) => {
     try {
         const newCh = new Challenge(req.body);
@@ -70,45 +45,47 @@ router.post('/', async(req, res, next) => {
     }
 });
 
-// Crear quiz
-router.post('/challenges/quiz', async(req, res) => {
+// ── UPDATE ─────────────────────────────────────────────────────────────────
+router.put('/:id', async(req, res, next) => {
     try {
-        const { title, description, reward, questions } = req.body;
-
-        const newQuiz = new Challenge({
-            title,
-            description,
-            content: '',
-            type: 'quiz',
-            reward,
-            questions
+        const up = await Challenge.findByIdAndUpdate(req.params.id, req.body, {
+            new: true,
+            runValidators: true
         });
-
-        await newQuiz.save();
-        res.status(201).json({ message: 'Quiz guardado correctamente', quiz: newQuiz });
-    } catch (error) {
-        console.error('Error al guardar el quiz:', error);
-        res.status(500).json({ message: 'Error del servidor' });
+        if (!up) return res.status(404).json({ msg: 'Reto no encontrado' });
+        res.json(up);
+    } catch (err) {
+        next(err);
     }
 });
 
-// Marcar reto como completado
+// ── DELETE ─────────────────────────────────────────────────────────────────
+router.delete('/:id', async(req, res, next) => {
+    try {
+        const del = await Challenge.findByIdAndDelete(req.params.id);
+        if (!del) return res.status(404).json({ msg: 'Reto no encontrado' });
+        res.json({ msg: 'Reto eliminado', deletedChallenge: del });
+    } catch (err) {
+        next(err);
+    }
+});
+
+// ── MARK COMPLETE ──────────────────────────────────────────────────────────
 router.post('/weekly/complete/:id', async(req, res) => {
     try {
         const { userId } = req.body;
-        const challengeId = req.params.id;
+        const chId = req.params.id;
         const user = await User.findById(userId);
-        const challenge = await Challenge.findById(challengeId);
+        const ch = await Challenge.findById(chId);
+        if (!user || !ch) return res.status(404).json({ msg: 'Usuario o reto no encontrado' });
 
-        if (!user || !challenge) return res.status(404).json({ msg: 'Usuario o reto no encontrado' });
-
-        if (user.completedChallenges.includes(challengeId)) {
+        if (user.completedChallenges.includes(chId)) {
             return res.status(400).json({ msg: 'Reto ya completado' });
         }
 
-        user.points += challenge.reward;
+        user.points += ch.reward;
         user.level = Math.floor(user.points / 100) + 1;
-        user.completedChallenges.push(challengeId);
+        user.completedChallenges.push(chId);
         await user.save();
 
         res.json({ msg: 'Reto completado', user });
@@ -117,41 +94,36 @@ router.post('/weekly/complete/:id', async(req, res) => {
     }
 });
 
-// Rutas para actividades (admin)
+// ── ADMIN ACTIVITIES ────────────────────────────────────────────────────────
 router.get('/activities', async(req, res) => {
-    try {
-        const challenges = await Challenge.find();
-        res.json(challenges);
-    } catch (err) {
-        res.status(500).json({ error: 'Error al obtener los challenges' });
-    }
+    try { res.json(await Challenge.find()); } catch (err) { res.status(500).json({ error: 'Error al obtener activities' }); }
 });
-
 router.post('/activities', async(req, res) => {
     try {
-        const challenge = new Challenge(req.body);
-        await challenge.save();
-        res.status(201).json(challenge);
+        const c = new Challenge(req.body);
+        await c.save();
+        res.status(201).json(c);
     } catch (err) {
         res.status(400).json({ error: err.message });
     }
 });
-
 router.put('/activities/:id', async(req, res) => {
     try {
-        const updated = await Challenge.findByIdAndUpdate(req.params.id, req.body, { new: true, runValidators: true });
-        res.json(updated);
+        const u = await Challenge.findByIdAndUpdate(req.params.id, req.body, {
+            new: true,
+            runValidators: true
+        });
+        res.json(u);
     } catch (err) {
         res.status(400).json({ error: err.message });
     }
 });
-
 router.delete('/activities/:id', async(req, res) => {
     try {
         await Challenge.findByIdAndDelete(req.params.id);
         res.json({ msg: 'Challenge eliminado' });
     } catch (err) {
-        res.status(500).json({ error: 'Error al eliminar el challenge' });
+        res.status(500).json({ error: 'Error al eliminar' });
     }
 });
 

@@ -1,5 +1,4 @@
 require('dotenv').config();
-
 const express = require('express');
 const mongoose = require('mongoose');
 const cors = require('cors');
@@ -9,31 +8,22 @@ const challengesRoutes = require('./routes/challenges');
 
 const app = express();
 
-// Configuración de CORS
-const allowedOrigins = [
-    'https://gamify-english-kgz3.onrender.com',
-    'http://localhost:3000'
-];
+// ► Forzar Node 18 en Render
+// package.json → "engines": { "node": "18.x" }
 
-const corsOptions = {
-    origin: function(origin, callback) {
-        if (!origin || allowedOrigins.indexOf(origin) !== -1) {
-            callback(null, true);
-        } else {
-            callback(new Error('Not allowed by CORS'));
-        }
-    },
+app.use(express.json());
+app.use(cors({
+    origin: [
+        'https://gamify-english-frontend.onrender.com',
+        'https://gamify-english.onrender.com',
+        'http://localhost:3000'
+    ],
     credentials: true,
     methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
     allowedHeaders: ['Content-Type', 'Authorization']
-};
+}));
+app.options('*', cors());
 
-app.use(cors(corsOptions));
-app.options('*', cors(corsOptions)); // Habilitar preflight para todas las rutas
-
-app.use(express.json());
-
-// Conexión a MongoDB
 mongoose.connect(process.env.MONGO_URI, {
         useNewUrlParser: true,
         useUnifiedTopology: true
@@ -41,24 +31,18 @@ mongoose.connect(process.env.MONGO_URI, {
     .then(() => console.log('✅ MongoDB conectado'))
     .catch(err => console.error('❌ Error MongoDB:', err));
 
-// Rutas
 app.use('/api/auth', authRoutes);
 app.use('/api/challenges', challengesRoutes);
 
-// Ruta raíz
 app.get('/', (req, res) => res.send('🚀 API funcionando correctamente'));
 
-// Error handler genérico
 app.use((err, req, res, next) => {
     console.error(err.stack);
-
     if (err.message === 'Not allowed by CORS') {
         return res.status(403).json({ msg: 'Origen no permitido' });
     }
-
     res.status(500).json({ msg: err.message || 'Algo salió mal' });
 });
 
-// Puerto de escucha
 const PORT = process.env.PORT || 4000;
-app.listen(PORT, () => console.log(`🔊 Server escuchando en puerto ${PORT}`));
+app.listen(PORT, () => console.log(`🔊 Server en puerto ${PORT}`));

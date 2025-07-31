@@ -2,6 +2,7 @@ const express = require('express');
 const router = express.Router();
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
+const mongoose = require('mongoose');
 const User = require('../models/User');
 
 // Definición de insignias con IDs
@@ -32,7 +33,32 @@ const badgeNameToIdMap = {
     'Gran Maestro': 'gran-maestro'
 };
 
-// Registro mejorado con validación de datos
+// Middleware para verificar métodos HTTP en rutas críticas
+router.all('/register', (req, res, next) => {
+    if (req.method !== 'POST') {
+        return res.status(405).json({
+            success: false,
+            error: 'Método no permitido',
+            message: `El método ${req.method} no está permitido para esta ruta`,
+            allowedMethods: ['POST']
+        });
+    }
+    next();
+});
+
+router.all('/login', (req, res, next) => {
+    if (req.method !== 'POST') {
+        return res.status(405).json({
+            success: false,
+            error: 'Método no permitido',
+            message: `El método ${req.method} no está permitido para esta ruta`,
+            allowedMethods: ['POST']
+        });
+    }
+    next();
+});
+
+// Registro mejorado con validación completa
 router.post('/register', async(req, res) => {
     const { role, name, email, password, childId } = req.body;
 
@@ -56,6 +82,15 @@ router.post('/register', async(req, res) => {
         });
     }
 
+    // Validación de rol
+    if (!['student', 'parent', 'admin'].includes(role)) {
+        return res.status(400).json({
+            success: false,
+            error: 'Rol inválido',
+            message: 'El rol debe ser student, parent o admin'
+        });
+    }
+
     try {
         // Verificar si el usuario ya existe
         const existingUser = await User.findOne({ email });
@@ -71,7 +106,7 @@ router.post('/register', async(req, res) => {
         const salt = await bcrypt.genSalt(10);
         const passwordHash = await bcrypt.hash(password, salt);
 
-        // Crear nuevo usuario
+        // Crear nuevo usuario con valores por defecto
         const newUser = new User({
             role,
             name,
@@ -87,7 +122,7 @@ router.post('/register', async(req, res) => {
 
         await newUser.save();
 
-        // Generar token JWT con expiración más larga
+        // Generar token JWT con expiración de 7 días
         const token = jwt.sign({ id: newUser._id }, process.env.JWT_SECRET, {
             expiresIn: '7d'
         });
@@ -164,7 +199,7 @@ router.post('/login', async(req, res) => {
             });
         }
 
-        // Convertir insignias de nombres a IDs (con manejo de errores)
+        // Convertir insignias de nombres a IDs
         let needsSave = false;
         try {
             const convertedBadges = user.badges.map(badgeName => {
@@ -421,9 +456,6 @@ router.put('/users/:id', async(req, res) => {
     }
 });
 
-// Resto de los endpoints (actualizar progreso, reparar insignias, obtener usuarios, etc.)
-// ... (manteniendo las mismas mejoras en manejo de errores y validación) ...
-
 // Actualizar progreso con insignias por ID
 router.put('/update-progress/:id', async(req, res) => {
     const { points, type } = req.body;
@@ -543,10 +575,10 @@ router.get('/fix-badges/:userId', async(req, res) => {
     }
 });
 
-// Obtener todos los usuarios
+// Obtener todos los usuarios (sin información sensible)
 router.get('/users', async(req, res) => {
     try {
-        const users = await User.find().select('-passwordHash');
+        const users = await User.find().select('-passwordHash -__v');
         res.json({
             success: true,
             count: users.length,
@@ -562,7 +594,7 @@ router.get('/users', async(req, res) => {
     }
 });
 
-// Obtener un usuario por ID
+// Obtener un usuario por ID (sin información sensible)
 router.get('/users/:id', async(req, res) => {
     try {
         const userId = req.params.id;
@@ -576,7 +608,7 @@ router.get('/users/:id', async(req, res) => {
             });
         }
 
-        const user = await User.findById(userId).select('-passwordHash');
+        const user = await User.findById(userId).select('-passwordHash -__v');
         if (!user) {
             return res.status(404).json({
                 success: false,

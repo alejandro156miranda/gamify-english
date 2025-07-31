@@ -160,12 +160,21 @@ router.put('/update-profile', async(req, res) => {
 router.put('/users/:id', async(req, res) => {
     try {
         const { name, email, role } = req.body;
-        const user = await User.findById(req.params.id);
-        if (!user) return res.status(404).json({ msg: 'Usuario no encontrado' });
 
-        user.name = name ? ? user.name;
-        user.email = email ? ? user.email;
-        user.role = role ? ? user.role;
+        // Validar datos de entrada
+        if (!name && !email && !role) {
+            return res.status(400).json({ msg: 'Proporciona al menos un campo para actualizar' });
+        }
+
+        const user = await User.findById(req.params.id);
+        if (!user) {
+            return res.status(404).json({ msg: 'Usuario no encontrado' });
+        }
+
+        // Actualizar solo los campos proporcionados
+        if (name) user.name = name;
+        if (email) user.email = email;
+        if (role) user.role = role;
 
         await user.save();
 
@@ -174,13 +183,13 @@ router.put('/users/:id', async(req, res) => {
             name: user.name,
             email: user.email,
             role: user.role,
+            msg: 'Usuario actualizado correctamente'
         });
     } catch (err) {
         console.error('❌ Error al actualizar usuario:', err);
         res.status(500).json({ msg: 'Error al actualizar usuario' });
     }
 });
-
 
 // Actualizar progreso con insignias por ID
 router.put('/update-progress/:id', async(req, res) => {

@@ -4,8 +4,8 @@ const express = require('express');
 const mongoose = require('mongoose');
 const cors = require('cors');
 
-const authRoutes = require('./routes/auth');
-const challengesRoutes = require('./routes/challenges');
+const authRoutes = require('./src/routes/auth');
+const challengesRoutes = require('./src/routes/challenges');
 
 const app = express();
 
@@ -126,8 +126,7 @@ app.use((err, req, res, next) => {
     res.status(err.status || 500).json({
         error: 'Error interno del servidor',
         message: process.env.NODE_ENV === 'production' ?
-            'Por favor contacta al soporte técnico' :
-            err.message,
+            'Por favor contacta al soporte técnico' : err.message,
         ...(process.env.NODE_ENV !== 'production' && { stack: err.stack })
     });
 });

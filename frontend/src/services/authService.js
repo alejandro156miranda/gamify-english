@@ -6,8 +6,15 @@ const API = axios.create({
     headers: { 'Content-Type': 'application/json' }
 });
 
-export const register = data => API.post('/register', data);
-
+export const register = async (data) => {
+    try {
+        const response = await API.post('/register', data);
+        return response.data;
+    } catch (error) {
+        console.error('Error en registro:', error);
+        throw error;
+    }
+};
 // LOGIN ACTUALIZADO PARA MANEJAR INSIGNIAS
 export async function login(data) {
     const res = await API.post('/login', data);

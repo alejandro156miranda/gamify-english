@@ -83,7 +83,7 @@ router.post('/register', async(req, res) => {
     }
 
     // Validación de rol
-    if (!['student', 'parent', 'admin'].includes(role)) {
+    if (!['child', 'parent', 'admin'].includes(role)) {
         return res.status(400).json({
             success: false,
             error: 'Rol inválido',

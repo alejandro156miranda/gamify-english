@@ -8,16 +8,37 @@ const authRoutes = require('./routes/auth');
 const challengesRoutes = require('./routes/challenges');
 
 const app = express();
-// --- Middlewares ---
-// server.js (configuración de CORS actualizada)
+
+// 1. Configuración avanzada de CORS
+const allowedOrigins = [
+    'https://gamify-english-kgz3.onrender.com',
+    'http://localhost:3000'
+];
+
 const corsOptions = {
-    origin: [
-        'https://gamify-english-kgz3.onrender.com', // Frontend
-        'http://localhost:3000' // Para desarrollo local
+    origin: (origin, callback) => {
+        if (!origin || allowedOrigins.includes(origin)) {
+            callback(null, true);
+        } else {
+            console.warn(`⚠️ Origen bloqueado por CORS: ${origin}`);
+            callback(new Error('Origen no permitido por CORS'));
+        }
+    },
+    credentials: true,
+    methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+    allowedHeaders: [
+        'Content-Type',
+        'Authorization',
+        'X-Requested-With',
+        'Accept',
+        'Origin'
     ],
-    methods: ['GET', 'POST', 'PUT', 'DELETE'],
-    credentials: true
+    preflightContinue: false,
+    optionsSuccessStatus: 204,
+    maxAge: 86400
 };
+
+// 2. Middlewares esenciales
 app.use(cors(corsOptions));
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));

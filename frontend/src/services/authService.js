@@ -1,6 +1,6 @@
 import axios from 'axios';
 
-const baseURL = process.env.REACT_APP_API_URL || 'https://gamify-english-backend.onrender.com';
+const baseURL = process.env.REACT_APP_API_URL || 'gamify-english-kgz3.onrender.com';
 const API = axios.create({
     baseURL: `${baseURL}/api/auth`,
     headers: { 'Content-Type': 'application/json' }

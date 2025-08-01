@@ -12,7 +12,7 @@ const app = express();
 // 1. Configuración avanzada de CORS
 const allowedOrigins = [
     'https://gamify-english-kgz3.onrender.com',
-    'http://localhost:3000',
+    'http://localhost:5000',
     'https://gamify-english-backend.onrender.com'
 ];
 
